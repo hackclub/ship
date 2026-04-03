@@ -1,0 +1,75 @@
+---
+title: Minecraft
+description: Minecraft Mods, Plugins & Resource Packs
+---
+
+import { Accordion, Accordions } from 'fumadocs-ui/components/accordion';
+
+For mod libraries / mod development frameworks, see [Libraries](). (TODO)
+# Requirements
+- Demo must be a link to a [Modrinth](https://modrinth.com/) or [Curseforge](https://www.curseforge.com/) page
+- Supported versions must be specified on the mod page and README
+  - Each **major** version listed must be tested
+  - Ex: `1.20.1, 1.21.*, 26.1, etc.`
+- Supported loaders must be specified on the mod page and README
+  - Ex: `Fabric, Paper, etc.`
+- Dependencies must be listed on the mod page and README
+  - Ex: `Continuity, Respackopts (optional), etc.`
+
+## Configuration
+If your mod/plugin has a configuration file, it needs to meet these requirements:
+- Config path specified on the mod page and README
+  - Ex: `config/MyMod.json`
+- Each field must be documented in the README, or in the config file directly
+  - Alternatively, use a mod like [Cloth Config API](https://modrinth.com/mod/cloth-config) to add support for editing the config in-game!
+<Accordions type="single">
+  <Accordion title="Example Configuration">
+Example config taken from [FallingTree](https://modrinth.com/mod/fallingtree).
+```jsonc
+{
+  // Should the player be sneaking for the mod to activate?
+  // Options: SNEAK_DISABLE, SNEAK_ENABLE, IGNORE
+  "sneakMode": "IGNORE",
+  // Should the mod work in creative?
+  "breakInCreative": true,
+  // Should blocks drop when the mod is used in creative?
+  "lootInCreative": false,
+  // How notifications are shown
+  // Options: CHAT, ACTION_BAR, NONE
+  "notificationMode": "ACTION_BAR",
+  // Tool configurations
+  "tools": {
+    // Items that always activate the mod
+    "whitelisted": ["minecraft:oak_boat", "#minecraft:flowers"],
+    // Items that never activate the mod
+    "blacklisted": ["minecraft:oak_boat", "#minecraft:flowers"],
+    // Allow the mod to be used with an empty hand
+    "ignoreTools": false,
+    // Damage taken off the tool for each block broken (set to 0 to disable)
+    "damageMultiplicand": 1,
+    // How much longer it will take to activate the mod (set to 0.0 to disable)
+    "speedMultiplicand": 0.0,
+    // Require tools to be on the whitelist
+    "forceToolUsage": true
+  },
+  // Player configurations
+  "player": {
+    // Tags needed in order to use the mod
+    "allowedTags": ["playerTag1", "playerTag2"]
+  },
+  // Enchantment configurations
+  "enchantment": {
+    // Require the "Chopper" enchantement in order to activate the mod
+    "requireEnchant": true
+  }
+}
+```
+  </Accordion>
+</Accordions>
+
+## Cards
+
+<Cards>
+  <Card title="Learn more about Next.js" href="https://nextjs.org/docs" />
+  <Card title="Learn more about Fumadocs" href="https://fumadocs.dev" />
+</Cards>
