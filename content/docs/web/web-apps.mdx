@@ -3,32 +3,45 @@ title: Web Apps
 description: Web apps / websites
 ---
 
-# Requirements
+import { Callout } from 'fumadocs-ui/components/callout';
+
+## Requirements
+
 - Demo must be a link to your published site / web app
-- Site **cannot** be hosted on onrender, railway, or be a tunnel link - it should be depoloyed somewhere permanant
-- Any Login / Auth features must allow users to create accounts and log in
-  - You can give a 'demo user' login to voters, but we still need to be able to create accounts
+- Any login / auth features must allow users to create accounts and log in
+
+<Callout type="warn" title="Hosting restrictions">
+  Your site **cannot** be hosted on Render, Railway, or be a tunnel link. It should be deployed somewhere permanent. These services spin down on the free tier, meaning voters may hit a cold-start delay or a dead link.
+</Callout>
 
 ## Deploying / Publishing
 
-Not sure how to get your site / web app online? 
+Not sure how to get your site or web app online? Follow one of our step-by-step guides below to get started!
 
-You can use:
-- GitHub Pages for static sites
-- [Vercel](https://vercel.com) (Great for full-stack web-apps!)
-- Netlify
-- Something else if you prefer!
+<Cards>
+  <Card
+    title="Vercel"
+    href="/docs/web/vercel"
+    description="Deploy full-stack apps with serverless functions, databases, and auto-deployments from GitHub"
+  />
+  <Card
+    title="GitHub Pages"
+    href="/docs/web/github-pages"
+    description="Free hosting for static sites - HTML, CSS, and JavaScript. The easiest option if you don't need a backend"
+  />
+</Cards>
 
-### GitHub Pages
-1. Open up your repo on GitHub
-2. Go to repo settings
-3. In the sidebar, under `Code and Automation`, select Pages
-4. Select your main branch under `branch` to deploy from a branch
-5. GitHub will deploy your site (assuming there is an `index.html` in the root of the repo) and your url should be `username.github.io/reponame` - that's your demo url!
+<Callout type="info" title="Other hosting options">
+  You can also use **Netlify**, **Cloudflare Pages**, or any other permanent hosting provider. Above are the most popular Hosting providers, but you can use whatever works best for your project!
+</Callout>
 
-### Vercel
-1. Create or login to your Vercel account and link your GitHub account
-2. Create a new vercel project and select your GitHub repo
-3. Vercel should auto detect the build framework (if you need one), confirm it's correct and press next
-4. Vercel will make a deployment and give you a `*.vercel.app` url - this is your demo link!
+### Not sure which to pick?
 
+| | Vercel | GitHub Pages |
+|---|---|---|
+| **Best for** | Full-stack apps (Next.js, React, etc.) | Static sites (HTML/CSS/JS) |
+| **Backend support** | Yes (serverless functions) | No |
+| **Database** | Yes (via integrations) | No |
+| **Auto-deploy on push** | Yes (built-in) | Yes (with Actions) |
+| **Custom domain** | Yes | Yes |
+| **Price** | Free tier available | Free |

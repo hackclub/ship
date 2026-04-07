@@ -1,0 +1,142 @@
+---
+title: Vercel
+description: Deploy full-stack web apps with Vercel
+---
+
+import { Callout } from 'fumadocs-ui/components/callout';
+import { Step, Steps } from 'fumadocs-ui/components/steps';
+
+Vercel is a cloud platform that makes it easy to deploy full-stack web applications. The free tier is generous and perfect for demo projects!
+
+## What You'll Need
+
+- A [Vercel account](https://vercel.com/signup) (free)
+- A GitHub account with your project pushed to a repository
+
+---
+
+## Deploying Your Project
+
+<Steps>
+<Step>
+
+### Select the Hobby plan
+
+Go to [vercel.com/signup](https://vercel.com/signup). First, you'll be asked to pick a plan type. Select **"I'm working on personal projects" (Hobby)**.
+
+![Select the Hobby plan](/docs/web/images/vercel-signup.png)
+
+<Callout type="warn" title="Don't pick Pro!">
+  The Pro plan is for commercial projects and will cost money after free trial! The **Hobby** plan is free and works perfectly for your submission.
+</Callout>
+
+</Step>
+
+<Step>
+
+### Enter your name
+
+Enter your name and click **Continue**.
+
+![Enter your name and continue](/docs/web/images/vercel-signup-2.png)
+
+</Step>
+
+<Step>
+
+### Connect with GitHub
+
+You'll be asked how to create your account. Select **Continue with GitHub**.
+
+![Continue with GitHub to create your account](/docs/web/images/vercel-signup-3.png)
+
+<Callout type="info" title="Why GitHub?">
+  Signing up with GitHub directly connects your repos to Vercel, so it can automatically detect and deploy your projects. If you sign up with another method, you'll need to manually connect your GitHub account in settings later anyway.
+</Callout>
+
+</Step>
+
+<Step>
+
+### Create a new project
+
+From your Vercel dashboard, click **Add New -> Project**.
+
+![Add new project button on Vercel dashboard](/docs/web/images/vercel-new-project.png)
+
+</Step>
+
+<Step>
+
+### Import your repository
+
+You'll see a list of your GitHub repos. Find your project and click **Import**.
+
+![Import Git repository screen](/docs/web/images/vercel-import-repo.png)
+
+</Step>
+
+<Step>
+
+### Configure build settings
+
+<Callout type="info">
+  For most frameworks, you won't need to change anything - Vercel handles it automatically.
+</Callout>
+
+![Configure project build settings](/docs/web/images/vercel-build-settings.png)
+
+</Step>
+
+<Step>
+
+### Add environment variables (if needed)
+
+If your app uses environment variables (API keys, database URLs, etc.), expand the **Environment Variables** section and add them here.
+
+<Callout type="warn" title="Don't hardcode secrets!">
+  Never put API keys or database credentials directly in your code. Use environment variables in Vercel and access them via `process.env.YOUR_VARIABLE`.
+</Callout>
+
+![Environment variables configuration](/docs/web/images/vercel-env-vars.png)
+
+</Step>
+
+<Step>
+
+### Deploy
+
+Click **Deploy** and watch Vercel build your project. Once complete, you'll get a live URL like:
+
+```
+https://project-name.vercel.app
+```
+
+![Successful deployment screen with URL](/docs/web/images/vercel-deploy-success.png)
+
+Done. This is your demo link that you can use when submitting your projects!
+
+</Step>
+</Steps>
+
+---
+
+## Troubleshooting
+
+<Callout type="warn" title="Build failing?">
+  Check the build logs in the Vercel dashboard under **Deployments -> [commit] -> Build Logs**.
+</Callout>
+
+<Callout type="warn" title="Environment variables not working?">
+  Make sure the variable is added for the correct environment (Production, Preview, Development).
+</Callout>
+
+<Callout type="error" title="API routes returning 404?">
+  Check that your API files are in the correct directory for your framework (`app/api/` for Next.js App Router, `pages/api/` for Pages Router, or `api/` for Vercel serverless functions).
+</Callout>
+
+---
+
+## What's Next?
+
+Your URL (e.g., `project-name.vercel.app`) is what you'll submit as your demo link. Make sure it works and that any login/auth features allow account creation!

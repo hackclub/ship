@@ -1,5 +1,5 @@
 {
   "title": "Web Apps",
   "icon": "Globe",
-  "pages": ["web-apps"]
+  "pages": ["web-apps", "vercel", "github-pages"]
 }
