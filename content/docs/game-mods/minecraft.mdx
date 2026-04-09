@@ -7,9 +7,8 @@ import { Accordion, Accordions } from 'fumadocs-ui/components/accordion';
 
 For mod libraries / mod development frameworks, see [Libraries](). (TODO)
 # Requirements
-- Demo must be a link to a [Modrinth](https://modrinth.com/) or [Curseforge](https://www.curseforge.com/) page
+- Demo must either be a link to a [Modrinth](https://modrinth.com/) or [Curseforge](https://www.curseforge.com/) page, or to a GitHub release containing the mod's `.jar` file.
 - Supported versions must be specified on the mod page and README
-  - Each **major** version listed must be tested
   - Ex: `1.20.1, 1.21.*, 26.1, etc.`
 - Supported loaders must be specified on the mod page and README
   - Ex: `Fabric, Paper, etc.`
@@ -20,7 +19,7 @@ For mod libraries / mod development frameworks, see [Libraries](). (TODO)
 If your mod/plugin has a configuration file, it needs to meet these requirements:
 - Config path specified on the mod page and README
   - Ex: `config/MyMod.json`
-- Each field must be documented in the README, or in the config file directly
+- It's recommended to have each field be documented in the README, or in the config file directly
   - Alternatively, use a mod like [Cloth Config API](https://modrinth.com/mod/cloth-config) to add support for editing the config in-game!
 <Accordions type="single">
   <Accordion title="Example Configuration">
@@ -66,10 +65,3 @@ Example config taken from [FallingTree](https://modrinth.com/mod/fallingtree).
 ```
   </Accordion>
 </Accordions>
-
-## Cards
-
-<Cards>
-  <Card title="Learn more about Next.js" href="https://nextjs.org/docs" />
-  <Card title="Learn more about Fumadocs" href="https://fumadocs.dev" />
-</Cards>
