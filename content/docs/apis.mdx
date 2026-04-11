@@ -1,0 +1,75 @@
+---
+title: APIs
+description: APIs
+icon: Server
+---
+
+import { Callout } from 'fumadocs-ui/components/callout';
+
+If your project is an API, it should be easy to understand, test, and use from the browser.
+
+## API Requirements
+
+- A browser-based API UI (Swagger/Redoc/etc.)
+- Clear documentation for each endpoint
+- API is already deployed (not local-only)
+- Example requests and responses
+- Auth instructions (If needed)
+
+
+<Callout type="warn" title="Avoid sleeping demos if possible">
+  Some free services can cold-start or sleep. If you can, choose a provider/plan that keeps your API responsive.
+</Callout>
+
+
+## Recommended API Docs + Web UI
+
+You should include clear documentation for your API, and an interactive Web UI.
+
+Some recommended API documentation tools with interactive UIs include:
+
+<Cards>
+  <Card
+    title="Swagger UI"
+    href="https://swagger.io/tools/swagger-ui/"
+    description="Most popular interactive API docs UI. Supports trying endpoints directly in-browser."
+  />
+  <Card
+    title="Redoc"
+    href="https://redocly.com/redoc/"
+    description="Clean, readable API reference docs from OpenAPI. Great for documentation-first APIs."
+  />
+  <Card
+    title="Scalar"
+    href="https://scalar.com/"
+    description="Modern API reference UI with OpenAPI support and polished UX."
+  />
+  <Card
+    title="RapiDoc"
+    href="https://rapidocweb.com/"
+    description="Fast web component for interactive API docs; simple to embed in any site."
+  />
+</Cards>
+
+## Authentication
+
+If your API requires authentication, make sure to include clear instructions for how to authenticate and obtain an API key, If possible also provide test credentials.
+
+
+## How to Host
+
+Pricing/limits may change, but these usually have free tiers:
+
+| Provider | Best for | Free tier notes |
+|---|---|---|
+| [**Vercel**](https://vercel.com) | Next.js/Node APIs, serverless routes | Great DX and fast deploys; usage limits apply |
+| [**Cloudflare Workers**](https://workers.cloudflare.com) | Edge APIs, low-latency endpoints | Very generous free tier for lightweight APIs |
+| [**Deno Deploy**](https://deno.com/deploy) | TypeScript-first APIs at the edge | Easy deploy flow and simple runtime |
+| [**Netlify Functions**](https://www.netlify.com/products/functions/) | Serverless functions with static/front-end sites | Good for simple API backends |
+| [**Supabase (Edge Functions + DB)**](https://supabase.com) | APIs backed by Postgres | Useful if you need auth/database |
+
+## Hosting for API Docs UI
+
+- [Vercel](docs/web/vercel) for static docs sites
+- [GitHub Pages](docs/web/github-pages) for static OpenAPI docs
+- Netlify / Cloudflare Pages for static docs sites
