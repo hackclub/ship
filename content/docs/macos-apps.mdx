@@ -1,0 +1,77 @@
+---
+title: macOS Apps
+description: Apple! Apple! Apple!
+icon: Apple
+---
+
+import { Callout } from 'fumadocs-ui/components/callout';
+import { GithubInfo } from 'fumadocs-ui/components/github-info';
+import { Step, Steps } from 'fumadocs-ui/components/steps';
+
+<Callout type="warn" title="This is a WIP docs">
+</Callout>
+
+## Overview
+
+This section covers macOS apps shipping guide, how to pack them as .dmg files, sign the app properly, and how to ship it without being rejected for many times!
+
+
+---
+
+# Pack as .dmg file
+## Using create-dmg
+Want to pack your app into a good looking drag and drop .dmg file?
+<picture>
+    <source media="(prefers-color-scheme: dark)" srcSet="/macos-assets/dmg-dark.png" />
+    <source media="(prefers-color-scheme: light)" srcSet="/macos-assets/dmg-dark.png" />
+    <img alt="screenshot of the flavortime DMG file" src="/macos-assets/dmg-dark.png" />
+</picture>
+
+
+The easiest way to create a professional `.dmg` installer is using the [`create-dmg`](https://github.com/sindresorhus/create-dmg) tool by Sindre Sorhus.
+
+<GithubInfo
+    owner="sindresorhus"
+    repo="create-dmg"
+/>
+
+
+<Steps>
+    <Step>
+    ### Installation
+    ```bash
+    npm install --global create-dmg
+    ```
+</Step>
+<Step>
+    ### Usage
+    ```bash
+    # create-dmg <app> [destination]
+    create-dmg MyApp.app MyApp.dmg
+    ```
+    <img src="/macos-assets/create-dmg-demo.gif" alt="create-dmg-demo" loading="eager" />
+    <Callout type="info" title="Credits">
+    The above image is from the [create-dmg](https://github.com/sindresorhus/create-dmg) repository, used under the MIT License. Copyright (c) Sindre Sorhus.
+    </Callout>
+</Step>
+    <Step>
+    Wanna add some flavor to the .DMG?    
+    #### With custom icon and background
+    ```bash
+    create-dmg MyApp.app MyApp.dmg \
+        --icon MyApp.app 80 180 \
+        --icon Applications 240 180 \
+        --background background.png \
+        --window-size 512 384
+    ```
+</Step>
+</Steps>
+
+
+Check the [documentation](https://github.com/sindresorhus/create-dmg) for more customization options like window position, text, and signing.
+
+---
+
+<Callout type="info">
+To join Hack Club's Apple Developer Program, DM [@amber](https://hackclub.enterprise.slack.com/archives/D0A55DS4EHK) or join the [Roasted Apple Sidequest](https://flavortown.hackclub.com/sidequests) and unnlock Apple Developer License in Shop.
+</Callout>
