@@ -1,0 +1,47 @@
+---
+title: Windows Apps
+description: Windows desktop apps
+icon: AppWindow
+---
+
+import { Callout } from 'fumadocs-ui/components/callout';
+
+Windows apps are desktop applications that run on Windows 10 or Windows 11. For this guide, the important part is that the Shipwrights can download, launch, and test your app without needing to set up the source code first.
+
+## Requirements
+
+- Provide an exe downloadable release, installer, or packaged build on Github releases
+- The app must launch on a standard Windows machine without manual source-code setup
+- Include any required runtime, dependency, or install instructions in your README
+- If the app uses authentication, users must be able to create accounts and log in
+
+<Callout type="warn" title="Do not submit source-only builds">
+  Reviewers need a runnable app, not just a repository link. Publish a release artifact or installer on Github releases that can be downloaded and launched directly
+</Callout>
+
+## Publishing Options
+
+You need to publish it on a GitHub Release for `.exe` or `.msi`
+
+## Common ways to package to exe
+
+- .NET (WinForms, WPF, WinUI): Use `dotnet publish` targeting Windows and output a build.
+- Electron apps: Use Electron Forge or Electron Builder to create a Windows installer (`.exe`) or portable app.
+- Python apps: Use PyInstaller or Nuitka to package your app into a runnable `.exe`.
+- C++ apps: Build in Release mode with Visual Studio and package the final executable with required files.
+
+If your stack uses another packager, that's fine. The key requirement is a downloadable exe from GitHub Releases that launches on a normal Windows machine.
+
+<Callout type="info" title="Keep installation simple">
+  If your app needs extra setup steps, document them clearly in your README and keep them short. The best submission is the one a reviewer can open and test immediately.
+</Callout>
+
+## Troubleshooting
+
+<Callout type="warn" title="App won't launch on a clean machine?">
+  Test the build before submitting it, from the actual Github Release itself. The exe not opening or dependencies not listed are a most common cause of rejects.
+</Callout>
+
+<Callout type="error" title="Installer blocked by Windows SmartScreen?">
+  This is normal for unsigned apps.
+</Callout>
