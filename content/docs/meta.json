@@ -5,6 +5,8 @@
     "game-mods",
     "web",
     "windows-apps",
-    "macos"
+    "macos",
+    "apis"
+
   ]
 }
