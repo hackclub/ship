@@ -23,8 +23,8 @@ This section covers macOS apps shipping guide, how to pack them as .dmg files, s
 Want to pack your app into a good looking drag and drop .dmg file?
 <picture>
     <source media="(prefers-color-scheme: dark)" srcSet="/macos-assets/dmg-dark.png" />
-    <source media="(prefers-color-scheme: light)" srcSet="/macos-assets/dmg-dark.png" />
-    <img alt="screenshot of the flavortime DMG file" src="/macos-assets/dmg-dark.png" />
+    <source media="(prefers-color-scheme: light)" srcSet="/macos-assets/dmg-light.png" />
+    <img alt="screenshot of the flavortime DMG file" src="/macos-assets/dmg-light.png" />
 </picture>
 
 
@@ -35,13 +35,34 @@ The easiest way to create a professional `.dmg` installer is using the [`create-
     repo="create-dmg"
 />
 
-
 <Steps>
     <Step>
     ### Installation
+    
+<CodeBlockTabs defaultValue="npm" groupId="package-manager">
+  <CodeBlockTabsList>
+    <CodeBlockTabsTrigger value="npm">
+      npm
+    </CodeBlockTabsTrigger>
+
+    <CodeBlockTabsTrigger value="brew">
+      brew
+    </CodeBlockTabsTrigger>
+  </CodeBlockTabsList>
+
+  <CodeBlockTab value="npm">
     ```bash
     npm install --global create-dmg
     ```
+  </CodeBlockTab>
+
+  <CodeBlockTab value="brew">
+    ```bash
+    brew install create-dmg
+    ```
+  </CodeBlockTab>
+</CodeBlockTabs>
+
 </Step>
 <Step>
     ### Usage
@@ -71,6 +92,11 @@ The easiest way to create a professional `.dmg` installer is using the [`create-
 Check the [documentation](https://github.com/sindresorhus/create-dmg) for more customization options like window position, text, and signing.
 
 ---
+
+## CHECKLIST
+AND <u>_PLEASE PLASE PLPASE_</u> check if you have meet all these requirements before you ship! 
+
+**WIP**
 
 <Callout type="info">
 To join Hack Club's Apple Developer Program, DM [@amber](https://hackclub.enterprise.slack.com/archives/D0A55DS4EHK) or join the [Roasted Apple Sidequest](https://flavortown.hackclub.com/sidequests) and unnlock Apple Developer License in Shop.
