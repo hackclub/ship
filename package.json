@@ -18,7 +18,6 @@
     "ai": "^6.0.140",
     "class-variance-authority": "^0.7.1",
     "flexsearch": "^0.8.212",
-    "fumadocs": "^0.0.0",
     "fumadocs-core": "16.7.9",
     "fumadocs-mdx": "14.2.11",
     "fumadocs-typescript": "^5.2.4",
