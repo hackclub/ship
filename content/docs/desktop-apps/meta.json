@@ -1,0 +1,5 @@
+{
+  "title": "Desktop Apps",
+  "icon": "Computer",
+  "pages": ["windows", "macos"]
+}
