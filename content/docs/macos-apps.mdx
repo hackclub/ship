@@ -7,13 +7,14 @@ icon: Apple
 import { Callout } from 'fumadocs-ui/components/callout';
 import { GithubInfo } from 'fumadocs-ui/components/github-info';
 import { Step, Steps } from 'fumadocs-ui/components/steps';
+import { CodeBlockTabs, CodeBlockTabsList, CodeBlockTabsTrigger, CodeBlockTabsContent } from 'fumadocs-ui/components/codeblock';
 
 <Callout type="warn" title="This is a WIP docs">
 </Callout>
 
 ## Overview
 
-This section covers macOS apps shipping guide, how to pack them as .dmg files, sign the app properly, and how to ship it without being rejected for many times!
+macOS apps are desktop applications that run on macOS. For this guide, the important part is that the Shipwrights can download, launch, and test your app without needing to set up the source code first.
 
 
 ---
@@ -28,7 +29,7 @@ Want to pack your app into a good looking drag and drop .dmg file?
 </picture>
 
 
-The easiest way to create a professional `.dmg` installer is using the [`create-dmg`](https://github.com/sindresorhus/create-dmg) tool by Sindre Sorhus.
+The easiest way to create a professional `.dmg` installer is using  [`create-dmg`](https://github.com/sindresorhus/create-dmg) by Sindre Sorhus.
 
 <GithubInfo
     owner="sindresorhus"
@@ -94,7 +95,12 @@ Check the [documentation](https://github.com/sindresorhus/create-dmg) for more c
 ---
 
 ## CHECKLIST
-AND <u>_PLEASE PLASE PLPASE_</u> check if you have meet all these requirements before you ship! 
+AND <u>_PLEASE PLEASE PLEASE_</u> check if you have met all these requirements before you ship!
+
+<Callout type="warn" title="Do not submit source-only builds">
+  Reviewers need a runnable app, not just a repository link. Publish a Github release that can be downloaded and launched directly; don't only mention how to build this app in the README.
+  Please provide either a .dmg file  or a .zip file of your .app file.
+</Callout>
 
 **WIP**
 
