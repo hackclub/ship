@@ -17,6 +17,7 @@
     "browser-extensions",
     "extenstions",
     "cli",
-    "hardware"
+    "hardware",
+    "libraries"
   ]
 }
