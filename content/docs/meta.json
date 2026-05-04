@@ -10,18 +10,18 @@
     "auth",
     "---Guides---",
     "web",
-    "game-mods",
-    "desktop-apps",
     "mobile-apps",
-    "chat-bots",
+    "desktop-apps",
     "apis",
+    "chat-bots",
     "browser-extensions",
     "extenstions",
     "cli",
-    "hardware",
     "libraries",
     "llm",
+    "game-mods",
+    "3d",
     "vr",
-    "3d"
+    "hardware"
   ]
 }
