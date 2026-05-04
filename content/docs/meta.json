@@ -15,6 +15,7 @@
     "mobile-apps",
     "apis",
     "browser-extensions",
-    "extenstions"
+    "extenstions",
+    "cli"
   ]
 }
