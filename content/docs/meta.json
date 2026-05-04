@@ -1,6 +1,10 @@
 {
   "title": "Documentation",
   "pages": [
+    "---Getting Started---",
+    "index",
+    "shipwrights",
+    "goi",
     "---Guides---", 
     "game-mods",
     "web",
