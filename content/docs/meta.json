@@ -20,6 +20,7 @@
     "cli",
     "hardware",
     "libraries",
-    "llm"
+    "llm",
+    "vr"
   ]
 }
