@@ -8,11 +8,11 @@
     "---Rules---",
     "demo",
     "auth",
-    "---Guides---", 
-    "game-mods",
+    "---Guides---",
     "web",
+    "game-mods",
     "desktop-apps",
+    "mobile-apps",
     "apis"
-
   ]
 }
