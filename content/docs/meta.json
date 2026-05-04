@@ -16,6 +16,7 @@
     "apis",
     "browser-extensions",
     "extenstions",
-    "cli"
+    "cli",
+    "hardware"
   ]
 }
