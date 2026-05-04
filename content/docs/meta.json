@@ -19,6 +19,7 @@
     "extenstions",
     "cli",
     "hardware",
-    "libraries"
+    "libraries",
+    "llm"
   ]
 }
