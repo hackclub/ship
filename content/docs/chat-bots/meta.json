@@ -1,0 +1,5 @@
+{
+  "title": "Chat Bots",
+  "icon": "Bot",
+  "pages": ["discord", "slack", "telegram"]
+}
