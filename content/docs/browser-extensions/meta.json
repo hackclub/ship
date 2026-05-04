@@ -1,0 +1,5 @@
+{
+  "title": "Browser Extensions",
+  "icon": "Puzzle",
+  "pages": ["chrome", "firefox", "other"]
+}
