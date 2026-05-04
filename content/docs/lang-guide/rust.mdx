@@ -1,0 +1,97 @@
+---
+title: Rust
+---
+
+import {Callout} from "fumadocs-ui/components/callout";
+import {
+    CodeBlock,
+    CodeBlockTab,
+    CodeBlockTabs,
+    CodeBlockTabsList,
+    CodeBlockTabsTrigger, Pre
+} from "fumadocs-ui/components/codeblock";
+
+### Requirement
+
+1. You must have a well-written README to explain your project
+2. Build something and share it!
+
+You can ship your demo in one of the following methods:
+1. Upload your library/application to https://crates.io/ (Your demo link should be your crate URL)
+2. Build the application and put it on your repo GitHub Release (Your demo link should be the GitHub Release link)
+
+If you are building a library, your README must include an example of usage and further explain how it could be
+used by other people, and your library must be distributed on https://crates.io/.
+
+<Callout type="info" title="Note for making an application">
+    You might want to do both as each carry their own advantages. Building the application allows the user to
+    easily try the application without building the project, however the amount of architecture/operation system
+    you could build for would be limited. Therefore, building the application with an instruction in README to
+    install it from https://crates.io/ could be more optimal as a hybrid solution.
+
+    You could also use GitHub Action to build for multiple architecture and operation system, although that
+    would be much more complex.
+</Callout>
+
+### Installing Rust [step]
+
+You can install rust with `rustup` for the following platforms:
+
+<CodeBlockTabs defaultValue="linux">
+    <CodeBlockTabsList>
+        <CodeBlockTabsTrigger value="windows">Windows</CodeBlockTabsTrigger>
+        <CodeBlockTabsTrigger value="linux">Linux</CodeBlockTabsTrigger>
+        <CodeBlockTabsTrigger value="macos">MacOS</CodeBlockTabsTrigger>
+    </CodeBlockTabsList>
+    <CodeBlockTab value="windows">
+        <div style={{paddingLeft: 10}}>
+            You can download `rustup-init.exe` from https://rust-lang.org/tools/install/
+        </div>
+    </CodeBlockTab>
+    <CodeBlockTab value="linux">
+        ```sh
+        curl --proto '=https' --tlsv1.2 https://sh.rustup.rs -sSf | sh
+        ```
+    </CodeBlockTab>
+    <CodeBlockTab value="macos">
+        ```sh
+        curl --proto '=https' --tlsv1.2 https://sh.rustup.rs -sSf | sh
+        xcode-select --install # If you have done this before, you can ignore it
+        ```
+    </CodeBlockTab>
+</CodeBlockTabs>
+
+You would be able to select the options for installation. I would recommend proceed with standard installation.
+
+After installing, you would have to restart the shell to load the `cargo` binary.
+
+### Creating a project [step]
+
+You can create a project with `cargo init`:
+
+```shell
+cargo init <project_name>
+```
+
+Alternatively if you want to create a library project, you can add `--lib` as argument
+
+```shell
+cargo init <project_name> --lib
+```
+
+### Adding dependency [step]
+You can use `cargo add` and `cargo remove` to add/remove dependency. You can find all the different library available
+in https://crates.io/.
+
+For example:
+```shell
+cargo add serde
+cargo remove serde
+```
+
+There are some common libraries that you might want to use:
+
+- [serde](https://crates.io/crates/serde) for data serialization
+- [tokio](https://crates.io/crates/tokio) for asynchronous runtime
+
+
