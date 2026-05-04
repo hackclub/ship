@@ -17,7 +17,7 @@ import {
 2. Build something and share it!
 
 You can ship your demo in one of the following methods:
-1. Upload your library/application to https://crates.io/ (Your demo link should be your crate URL)
+1. Upload your library/application to https://crates.io/ (Your demo link should be your crate URL). You can check the details [here](#crates).
 2. Build the application and put it on your repo GitHub Release (Your demo link should be the GitHub Release link)
 
 If you are building a library, your README must include an example of usage and further explain how it could be
@@ -93,5 +93,56 @@ There are some common libraries that you might want to use:
 
 - [serde](https://crates.io/crates/serde) for data serialization
 - [tokio](https://crates.io/crates/tokio) for asynchronous runtime
+
+### Write your code [step]
+
+Your main file will either be in `src/main.rs` or `src/lib.rs`, depend on whether you are making an application or library.
+Reference to https://doc.rust-lang.org/stable/ for resource to learn rust!
+
+### Distributing to crates.io [step] [#crates]
+
+1. Create an account on https://crates.io/, which would require you to sign in with your GitHub
+account.
+
+2. Go to the [API token page](https://crates.io/settings/tokens) in account settings to create an API token.
+
+<Callout type="warning">
+    Do not share the API token to anyone else, as they might able to upload any crates under your user, and can
+    potentially upload malicious software.
+</Callout>
+
+3. Run `cargo login` on your machine and paste in the API token.
+4. Make sure your `Cargo.tmol` included `name`, `version`, `edition`, `repository`, `authors`, `readme`, `description`,
+`license` under `[package]`, as they are required to upload to https://crates.io/
+5. Write your README (very important!)
+
+For example:
+
+```toml title="Cargo.toml"
+[package]
+name = "your_project"
+version = "0.1.0"
+edition = "2024"
+repository = "https://github.com/your_username/your_project"
+authors = ["your_username" ]
+readme = "README.md"
+description = "description"
+license = "GPL-3.0"
+```
+
+6. Run `cargo publish`
+7. Put your demo link for your crates and submit!
+
+
+### Distribute to GitHub Release (Application only) [step]
+1. Run `cargo build --release` to build the application in release mode
+<Callout type="info">
+    In cases where release mode take a long time to build, you might just want to use incremental debug build,
+    or try to change the optimization configuration.
+</Callout>
+2. Find the executable under `target/`
+3. Test locally if the executable run correctly
+4. Upload your executable to GitHub Release, with note on what OS and architecture it built for
+5. Put your demo link for your GitHub Release link abd submit!
 
 
