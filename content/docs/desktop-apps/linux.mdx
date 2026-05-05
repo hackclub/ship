@@ -1,7 +1,97 @@
 ---
 title: Linux
-description: Linux
+description: Publishing Linux desktop apps
+icon: Terminal
 ---
 
-<Callout type="warn" title="This is a WIP docs">
+import { Callout } from 'fumadocs-ui/components/callout';
+import { Step, Steps } from 'fumadocs-ui/components/steps';
+
+Linux apps are desktop applications that run on various Linux distributions (like Ubuntu, Fedora, or Arch). For this guide, the most important part is that Shipwrights can download, launch, and test your app without needing to compile the source code themselves.
+
+## Requirements
+
+- Provide a downloadable release artifact (like `.AppImage`, `.deb`, or `.tar.gz`) on GitHub Releases.
+- The app must launch on a standard Linux environment (we typically test on Ubuntu) without manual source-code setup.
+- Include any required runtime, dependency, or install instructions in your README.
+- If the app uses authentication, users must be able to create accounts and log in.
+
+<Callout type="warn" title="Do not submit source-only builds">
+  Reviewers need a runnable app, not just a repository link. Publish a release artifact on GitHub Releases that can be downloaded and launched directly.
+</Callout>
+
+## Recommended Format: AppImage
+
+The easiest and most reliable way to distribute a Linux app is using **AppImage**. An AppImage is a single file that contains your app and all its dependencies. It runs on almost all Linux distributions without needing root permissions or installation.
+
+### How to use an AppImage
+
+When a Shipwright downloads your AppImage, they will typically do this to run it:
+
+```bash
+chmod +x MyApp.AppImage
+./MyApp.AppImage
+```
+
+<Callout type="info">
+  You should include these instructions in your `README.md` so reviewers know how to launch your app.
+</Callout>
+
+## Common Ways to Package
+
+### Electron Apps
+If you are using Electron, `electron-builder` makes it incredibly easy to generate Linux builds.
+
+In your `package.json`, configure the Linux target:
+
+```json
+"build": {
+  "appId": "com.example.app",
+  "linux": {
+    "target": ["AppImage", "deb"]
+  }
+}
+```
+
+Then run your build command (e.g., `npx electron-builder --linux`).
+
+### Tauri Apps
+Tauri natively supports building for Linux. It outputs `.deb` and `.AppImage` by default when running on a Linux host.
+
+```bash
+npm run tauri build
+```
+<Callout type="warn" title="Important for Tauri">
+  You must build Tauri Linux apps from a Linux machine or an Ubuntu WSL/Docker environment. You cannot cross-compile for Linux from macOS or Windows easily.
+</Callout>
+
+### Python Apps
+Use `PyInstaller` to bundle your Python app into a single executable file:
+
+```bash
+pip install pyinstaller
+pyinstaller --onefile --windowed main.py
+```
+This will create a standalone executable in the `dist/` folder that you can distribute. You can also package it as a `.tar.gz` archive to include any external assets like images or configuration files.
+
+### C++ / Rust / Go (Native Binaries)
+Compile your application for Linux (`x86_64` architecture) and package the resulting binary along with any required assets into a `.tar.gz` archive.
+
+```bash
+tar -czvf my-app-linux-x86_64.tar.gz my-app assets/
+```
+
+## Other Formats
+
+- **.deb (Debian/Ubuntu):** Great for users on Debian-based systems. Users install it via `sudo apt install ./app.deb` or `sudo dpkg -i app.deb`.
+- **Flatpak / Snap:** Excellent for cross-distribution, but has a steeper learning curve for publishing. You can use them if you're comfortable, but AppImage is usually faster for simple distribution.
+
+## Troubleshooting
+
+<Callout type="warn" title="App won't launch? Missing shared libraries?">
+  Linux has many distributions, and they don't all have the same pre-installed libraries. If your app requires specific system libraries (like `libssl`, `libgtk-3-0`, or `webkit2gtk`), make sure they are statically linked, bundled with your app, or clearly documented in your README so reviewers can install them.
+</Callout>
+
+<Callout type="info" title="Testing your build">
+  Always test your packaged app on a fresh Linux installation or a Virtual Machine/Docker container to ensure it works without your local dev environment. A common mistake is an executable failing because a local file path was hardcoded or a dependency was only installed globally on the developer's machine.
 </Callout>

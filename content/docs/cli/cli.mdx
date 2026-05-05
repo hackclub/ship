@@ -1,7 +1,212 @@
 ---
 title: CLI
-description: CLI
+description: Publishing Command Line Interfaces
+icon: Terminal
 ---
 
-<Callout type="warn" title="This is a WIP docs">
+import { Callout } from 'fumadocs-ui/components/callout';
+import { Step, Steps } from 'fumadocs-ui/components/steps';
+
+Command Line Interfaces (CLIs) are powerful tools that run entirely in the terminal. For this guide, the most important part is that Shipwrights can download, install, and test your CLI as easily as possible without manual compilation.
+
+<Callout type="info" title="Building a Desktop App instead?">
+  If your application has a graphical user interface (GUI) and isn't meant to be used primarily from the terminal, please refer to our desktop app guides for [Windows](/docs/desktop-apps/windows), [macOS](/docs/desktop-apps/macos), or [Linux](/docs/desktop-apps/linux).
+</Callout>
+
+## Requirements
+
+- **Package Manager (Preferred):** Ideally, your CLI should be installed via a package manager like `npm`, `pip`, `cargo`, or `brew`. This is the standard, secure way developers consume CLI tools.
+- **Standalone Binary (Acceptable):** If you prefer not to use a package manager registry, providing a pre-compiled binary executable on GitHub Releases is completely acceptable.
+- **Clear Instructions:** Your `README.md` must contain the exact, one-line command needed to install and run your CLI.
+- **Do not submit source-only builds:** We should not have to manually clone your repository, install dependencies, and run build scripts just to test your app.
+
+---
+
+## Publishing via Package Managers
+
+The best way to distribute a CLI is through the native package registry of your programming language. Here is how to publish for the most popular ones:
+
+### Node.js / TypeScript (npm)
+
+If you are building a CLI with Node.js, you can publish it to the npm registry. For a comprehensive guide, read the [npm documentation on publishing packages](https://docs.npmjs.com/cli/v10/commands/npm-publish).
+
+<Steps>
+<Step>
+**Create your entry file**
+
+Create a `bin/index.js` file and make sure the very first line is the Node shebang:
+```javascript
+#!/usr/bin/env node
+
+console.log("Hello from my awesome CLI!");
+```
+</Step>
+<Step>
+**Configure your `package.json`**
+
+Add a `bin` field to tell npm which file to execute when the command is run:
+```json
+{
+  "name": "my-awesome-cli",
+  "version": "1.0.0",
+  "description": "My first CLI tool built for Ship!",
+  "bin": {
+    "my-cli": "./bin/index.js"
+  }
+}
+```
+</Step>
+<Step>
+**Login and Publish**
+```bash
+npm login
+npm publish
+```
+Shipwrights can then install your app using: `npm install -g my-awesome-cli`.
+</Step>
+</Steps>
+
+### Python (PyPI)
+
+Python CLIs can be distributed via the Python Package Index (PyPI) so they can be installed with `pip`. Read the [Python Packaging Authority (PyPA) tutorial](https://packaging.python.org/en/latest/tutorials/packaging-projects/) for detailed steps.
+
+<Steps>
+<Step>
+**Create your entry point logic**
+
+Create your python package directory and logic (e.g., `my_package/main.py`):
+```python
+def run():
+    print("Hello from Python CLI!")
+```
+</Step>
+<Step>
+**Configure `pyproject.toml`**
+
+Use `pyproject.toml` to define your project dependencies and where your CLI command starts:
+```toml
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "my-awesome-cli"
+version = "1.0.0"
+
+[project.scripts]
+my-cli = "my_package.main:run"
+```
+</Step>
+<Step>
+**Build and Upload**
+
+Install the build tools and upload via Twine:
+```bash
+pip install build twine
+python -m build
+twine upload dist/*
+```
+Shipwrights can then install it using: `pip install my-awesome-cli`.
+</Step>
+</Steps>
+
+### Rust (Crates.io)
+
+Rust is incredibly popular for building fast CLIs. You can publish your crate directly to crates.io. Check out the [Cargo Publishing Guide](https://doc.rust-lang.org/cargo/reference/publishing.html) for full details.
+
+<Steps>
+<Step>
+**Write your CLI**
+
+Inside your `src/main.rs`:
+```rust
+fn main() {
+    println!("Hello from Cargo CLI!");
+}
+```
+</Step>
+<Step>
+**Configure `Cargo.toml`**
+
+Ensure your manifest has all the required metadata (description and license are mandatory for crates.io):
+```toml
+[package]
+name = "my-awesome-cli"
+version = "1.0.0"
+edition = "2021"
+description = "A simple CLI tool for Ship"
+license = "MIT"
+```
+</Step>
+<Step>
+**Login and Publish**
+
+Get your API token from crates.io and run:
+```bash
+cargo login
+cargo publish
+```
+Shipwrights can then install it using: `cargo install my-awesome-cli`.
+</Step>
+</Steps>
+
+### Go (pkg.go.dev / GitHub)
+
+Go has a unique module system where your GitHub repository acts as the package itself. Read the [Go Modules Publishing Guide](https://go.dev/doc/modules/publishing) for more information.
+
+<Steps>
+<Step>
+**Initialize your module and write code**
+
+Initialize your module matching your GitHub URL, and write your `main.go`:
+```bash
+go mod init github.com/yourusername/my-awesome-cli
+```
+```go
+package main
+
+import "fmt"
+
+func main() {
+    fmt.Println("Hello from Go CLI!")
+}
+```
+</Step>
+<Step>
+**Tag your release**
+
+Push your code to GitHub and create a semantic version tag:
+```bash
+git tag v1.0.0
+git push origin v1.0.0
+```
+</Step>
+<Step>
+**Installation Command**
+
+There is no central registry you need to publish to! Shipwrights can install your CLI directly from your GitHub repo using:
+```bash
+go install github.com/yourusername/my-awesome-cli@latest
+```
+</Step>
+</Steps>
+
+---
+
+## Publishing Standalone Binaries
+
+If you wrote your CLI in a compiled language (Go, Rust, C++) and don't want to use a package manager registry, you can compile your code into executable binaries and attach them to a GitHub Release. See the [GitHub Documentation on managing releases](https://docs.github.com/en/repositories/releasing-projects-on-github/managing-releases-in-a-repository) for more info.
+
+### GitHub Releases
+
+1. Compile your binary for the major operating systems (Windows `.exe`, macOS, and Linux).
+2. Zip them up or create `.tar.gz` archives.
+3. Create a new Release on your GitHub repository and upload these files as "Assets".
+
+<Callout type="warn" title="Executable Permissions">
+  If you provide a direct download link for a binary, remind macOS/Linux users in your README that they might need to make the file executable before running it:
+  ```bash
+  chmod +x my-cli
+  ./my-cli
+  ```
 </Callout>
