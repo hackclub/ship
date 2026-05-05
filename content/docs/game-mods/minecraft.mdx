@@ -4,23 +4,25 @@ description: Minecraft Mods, Plugins & Resource Packs
 ---
 
 import { Accordion, Accordions } from 'fumadocs-ui/components/accordion';
+import { Step, Steps } from 'fumadocs-ui/components/steps';
+import { Tab, Tabs } from 'fumadocs-ui/components/tabs';
 
 For mod libraries / mod development frameworks, see [Libraries](). (TODO)
 ## Requirements
-- Demo must either be a link to a [Modrinth](https://modrinth.com/) or [Curseforge](https://www.curseforge.com/) page, or to a GitHub release containing the mod's `.jar` file.
-- Supported versions must be specified on the mod page and README
-  - Ex: `1.20.1, 1.21.*, 26.1, etc.`
-- Supported loaders must be specified on the mod page and README
-  - Ex: `Fabric, Paper, etc.`
-- Dependencies must be listed on the mod page and README
-  - Ex: `Continuity, Respackopts (optional), etc.`
+1. Demo must either be a link to a [Modrinth](https://modrinth.com/) or [Curseforge](https://www.curseforge.com/) page, or to a GitHub release containing the mod's `.jar` file.
+2. Supported versions must be specified on the mod page and README
+    - Ex: `1.20.1, 1.21.*, 26.1, etc.`
+3. Supported loaders must be specified on the mod page and README
+    - Ex: `Fabric, Paper, etc.`
+4. Dependencies must be listed on the mod page and README
+    - Ex: `Continuity, Respackopts (optional), etc.`
 
-## Configuration
+### Configuration
 If your mod/plugin has a configuration file, it needs to meet these requirements:
-- Config path specified on the mod page and README
-  - Ex: `config/MyMod.json`
-- It's recommended to have each field be documented in the README, or in the config file directly
-  - Alternatively, use a mod like [Cloth Config API](https://modrinth.com/mod/cloth-config) to add support for editing the config in-game!
+1. Config path specified on the mod page and README
+    - Ex: `config/MyMod.json`
+2. It's recommended to have each field be documented in the README, or in the config file directly
+    - Alternatively, use a mod like [Cloth Config API](https://modrinth.com/mod/cloth-config) to add support for editing the config in-game!
 <Accordions type="single">
   <Accordion title="Example Configuration">
 Example config taken from [FallingTree](https://modrinth.com/mod/fallingtree).
@@ -65,3 +67,78 @@ Example config taken from [FallingTree](https://modrinth.com/mod/fallingtree).
 ```
   </Accordion>
 </Accordions>
+
+## Modrinth Guide
+
+WIP: THIS IS INCOMPLETE
+
+<Steps>
+
+<Step>
+
+### Make a new project
+
+1. Make sure you're signed into [Modrinth](https://modrinth.com/)
+2. Navigate to the [project management dashboard](https://modrinth.com/dashboard/projects)
+3. Start the project creation by clicking "*Create a Project*"
+
+![Create a new project on the Modrinth project page](/docs/web/images/minecraft-project-new.png)
+
+</Step>
+
+<Step>
+
+### Configure the project
+
+- **Name**: How your project will be referred to.
+- **Visibility**: Who can access the project. This has to be set to **Public** for all Hack Club projects.
+- **Summary**: Short tagline describing the project.
+
+![Configure the project with the required fields](/docs/web/images/minecraft-project-configuration.png)
+
+</Step>
+
+<Step>
+
+### Create a version
+
+Once you have created the project, you can create its first version.
+1. Find your project settings by going to the project management dashboard and clicking the gear icon
+2. Scroll down, and open the "*Versions*" panel
+3. Create a new version by clicking the "*Create version*" button
+
+![Navigate to the project settings by clicking the gear icon](/docs/web/images/minecraft-project-settings.png)
+![Create a new version of the project](/docs/web/images/minecraft-version-create.png)
+
+</Step>
+
+<Step>
+
+### Configure the version
+
+After you've selected your project, you can configure various properties about it. The types of properties depend on the kind of project.
+
+<Tabs items={["Mods", "Resource Packs", "Data Packs"]}>
+<Tab>
+- **Environment**: Where your mod is meant to run.
+- **Dependencies**: Any other mods your mod needs to run.
+- **Metadata**: Required mod loaders and game versions.
+
+![TODO](/docs/web/images/minecraft-version-dependencies.png)
+![TODO](/docs/web/images/minecraft-version-details.png)
+![TODO](/docs/web/images/minecraft-version-environment.png)
+![TODO](/docs/web/images/minecraft-version-metadata.png)
+</Tab>
+
+<Tab>
+reosurc
+</Tab>
+
+<Tab>
+data
+</Tab>
+</Tabs>
+
+</Step>
+
+</Steps>
