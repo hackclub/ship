@@ -1,7 +1,156 @@
 ---
 title: PYPI
-description: PYPI
 ---
 
-<Callout type="warn" title="This is a WIP docs">
+import {Tabs, TabsContent} from "fumadocs-ui/components/tabs";
+import {Callout} from "fumadocs-ui/components/callout";
+import {
+    CodeBlockTab,
+    CodeBlockTabs,
+    CodeBlockTabsList,
+    CodeBlockTabsTrigger
+} from "fumadocs-ui/components/codeblock";
+
+### Requirement
+
+1. A well written README
+2. Ship your project!
+
+You can ship your demo in one of the following methods:
+1. Upload your library/CLI to https://pypi.org/ (Your demo link should be your pypi URL). You can check the details [here](#pypi).
+2. Build the application with `pyinstaller` or alternative and put it on your repo GitHub Release
+(Your demo link should be the GitHub Release link)
+3. For project that doesn't qualify the above options, you might want to check out one of the other documents
+for more details requirement
+
+If you are building a library, your README must include an example of usage and further explain how it could be
+used by other people, and your library must be distributed on https://crates.io/.
+
+<Callout type="info" title="Note for making an application">
+    Your writer personal preference is to distribute it on pypi if it is a CLI :)
+    In general, using `pyinstaller` or alternative might cause additional setup for some library, or might not work
+    at all. Please test your application thoroughly before submitting it to avoid delay!
+    Your application could be mark as malware by antivirus (frequently) so it is something good to note about.
 </Callout>
+
+### Installing Python [step]
+<Tabs groupId="install-op" items={["uv", "python.org"]} persist defaultIndex={0}>
+    <TabsContent value="uv">
+        1. Install `uv`
+        <CodeBlockTabs groupId="os" items={["macOS", "Linux", "Windows"]} persist  defaultValue="Linux">
+            <CodeBlockTabsList>
+                <CodeBlockTabsTrigger value="Linux">Linux</CodeBlockTabsTrigger>
+                <CodeBlockTabsTrigger value="macOS">MacOS</CodeBlockTabsTrigger>
+                <CodeBlockTabsTrigger value="Windows">Windows</CodeBlockTabsTrigger>
+            </CodeBlockTabsList>
+            <CodeBlockTab value="Linux">
+                ```shell
+                curl -LsSf https://astral.sh/uv/install.sh | sh
+                ```
+            </CodeBlockTab>
+            <CodeBlockTab value="macOS">
+                ```shell
+                curl -LsSf https://astral.sh/uv/install.sh | sh
+                ```
+            </CodeBlockTab>
+            <CodeBlockTab value="Windows">
+                ```shell
+                powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | iex"
+                ```
+            </CodeBlockTab>
+        </CodeBlockTabs>
+
+        2. Install a preferred version of python (could be skipped on macOS/Linux)
+
+        ```shell
+        uv python install 3.13 --preview --default # Install 3.13 to the default version of Python
+        ```
+
+        If you choose this path, you will be taking an opinionated approach by using uv as both your Python version
+        manager and your package manager. If you prefer not to use it for both, you should select the alternative path.
+    </TabsContent>
+    <TabsContent value="python.org">
+        1. Download the installer from https://www.python.org/downloads/
+        <Callout type="warning" title="If you are on windows">
+            Do not install Python from Microsoft Store, and if you do, it is recommended to remove it as it is known to
+            cause issue sometimes. For example, when installing dependency that use C library.
+        </Callout>
+        2. Run the installer
+
+        Note that for following this, command would frequently be platform dependent, it might be more recommended
+        to use `uv` path instead, if possible.
+    </TabsContent>
+</Tabs>
+
+### Creating a project [step]
+<Tabs groupId="install-op" items={["uv", "python.org"]} persist defaultIndex={0}>
+    <TabsContent value="uv">
+        Run
+        ```shell
+        uv init project_name
+        ```
+    </TabsContent>
+    <TabsContent value="python.org">
+        1. Create your project directory and `cd` to the directory
+        2. Initialize the virtual environment
+        <CodeBlockTabs groupId="os" items={["macOS", "Linux", "Windows"]} persist  defaultValue="Linux">
+            <CodeBlockTabsList>
+                <CodeBlockTabsTrigger value="Linux">Linux</CodeBlockTabsTrigger>
+                <CodeBlockTabsTrigger value="macOS">MacOS</CodeBlockTabsTrigger>
+                <CodeBlockTabsTrigger value="Windows">Windows</CodeBlockTabsTrigger>
+            </CodeBlockTabsList>
+            <CodeBlockTab value="Linux">
+                ```shell
+                python3 -m venv .venv
+                source .venv/bin/activate # This include all the necessary environment variable, you need to run this in each terminal session
+                ```
+            </CodeBlockTab>
+            <CodeBlockTab value="macOS">
+                ```shell
+                python3 -m venv .venv
+                source .venv/bin/activate # This include all the necessary environment variable, you need to run this in each terminal session
+                ```
+            </CodeBlockTab>
+            <CodeBlockTab value="Windows">
+                python -m venv .venv
+                .\venv\Scripts\activate # This include all the necessary environment variable, you need to run this in each terminal session
+            </CodeBlockTab>
+        </CodeBlockTabs>
+        3. Create `pyproject.toml`
+        ```toml title="pyproject.toml"
+        [build-system]
+        requires = ["setuptools>=61.0"]
+        build-backend = "setuptools.build_meta"
+
+        [project]
+        name = "project_name"
+        version = "0.1.0"
+        description = "project_desc"
+        readme = "README.md"
+        requires-python = ">=3.9"
+        dependencies = []
+        ```
+        4. Create `README.md`
+        5. Create `.gitignore` with https://github.com/github/gitignore/blob/main/Python.gitignore as its content
+    </TabsContent>
+</Tabs>
+### Add dependency [step]
+<Tabs groupId="install-op" items={["uv", "python.org"]} persist defaultIndex={0}>
+    <TabsContent value="uv">
+        Run
+        ```shell
+        uv add requests # Replace requests to the thing you want to install
+        ```
+    </TabsContent>
+    <TabsContent value="python.org">
+        1. Add the dependency to the `project.dependencies` section in the `pyproject.toml`
+        For example:
+        ```toml
+        dependencies = ["request"]
+        ```
+        2. Run
+        ```shell
+        pip install .
+        ```
+    </TabsContent>
+</Tabs>
