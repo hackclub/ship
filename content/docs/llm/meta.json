@@ -1,5 +1,5 @@
 {
-  "title": "VR",
-  "icon": "RectangleGoggles",
-  "pages": ["vr"]
+  "title": "AI / LLM",
+  "icon": "Sparkles",
+  "pages": ["llm"]
 }
