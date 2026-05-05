@@ -72,8 +72,8 @@ used by other people, and your library must be distributed on https://crates.io/
     <TabsContent value="python.org">
         1. Download the installer from https://www.python.org/downloads/
         <Callout type="warning" title="If you are on windows">
-            Do not install Python from Microsoft Store, and if you do, it is recommended to remove it as it is known to
-            cause issue sometimes. For example, when installing dependency that use C library.
+            Do not install Python from Microsoft Store, and if you have already done so, it is recommended to remove
+            it as it is known to cause issue sometimes. For example, when installing dependency that use C library.
         </Callout>
         2. Run the installer
 
@@ -134,6 +134,15 @@ used by other people, and your library must be distributed on https://crates.io/
         5. Create `.gitignore` with https://github.com/github/gitignore/blob/main/Python.gitignore as its content
     </TabsContent>
 </Tabs>
+
+If you are making an application (CLI/GUI), add the following to your `pyproject.toml`
+```toml
+[project.scripts]
+project_name = "project_name.module:entry_function"
+```
+
+(Please replace `project_name`, `module` and `entry_function` as appropriate)
+
 ### Add dependency [step]
 <Tabs groupId="install-op" items={["uv", "python.org"]} persist defaultIndex={0}>
     <TabsContent value="uv">
@@ -154,3 +163,89 @@ used by other people, and your library must be distributed on https://crates.io/
         ```
     </TabsContent>
 </Tabs>
+
+### Distributing to pypi [step] [#pypi]
+You should first create an account on [pypi](https://pypi.org/) and generate an API token.
+<Tabs groupId="install-op" items={["uv", "python.org"]} persist defaultIndex={0}>
+    <TabsContent value="uv">
+        Use `uv version` to bump your project version
+
+        Use `uv build` to build the package
+
+        Use `uv publish --token your_secret_token` to publish it to pypi!
+
+        You might alternatively want to set `UV_PUBLISH_TOKEN` environment variable to omit `--token your_secret_token`
+        from the argument
+
+    </TabsContent>
+    <TabsContent value="python.org">
+        On this stage, you would need 2 dependency: `build` and `twine`
+
+        You would be asked for your username and password on `twine upload` stage, you should put
+
+        Username: `__token__`
+
+        Password: your API token
+
+        You might have to update the version first before publishing, you can do so by editing the version
+        on `pyproject.toml`
+
+        <CodeBlockTabs groupId="os" items={["macOS", "Linux", "Windows"]} persist  defaultValue="Linux">
+            <CodeBlockTabsList>
+                <CodeBlockTabsTrigger value="Linux">Linux</CodeBlockTabsTrigger>
+                <CodeBlockTabsTrigger value="macOS">MacOS</CodeBlockTabsTrigger>
+                <CodeBlockTabsTrigger value="Windows">Windows</CodeBlockTabsTrigger>
+            </CodeBlockTabsList>
+            <CodeBlockTab value="Linux">
+                ```shell
+                pip install build twine
+                python3 -m build
+                python3 -m twine upload dist/*
+                ```
+            </CodeBlockTab>
+            <CodeBlockTab value="macOS">
+                ```shell
+                pip install build twine
+                python3 -m build
+                python3 -m twine upload dist/*
+                ```
+            </CodeBlockTab>
+            <CodeBlockTab value="Windows">
+                pip install build twine
+                python -m build
+                python -m twine upload dist/*
+            </CodeBlockTab>
+        </CodeBlockTabs>
+    </TabsContent>
+</Tabs>
+
+<Callout type="warning">
+    Do not share the API token to anyone else, as they might able to upload any crates under your user, and can
+    potentially upload malicious software.
+</Callout>
+
+### Distribute to GitHub Release with pyinstaller (Application only) [step]
+1. Install `pyinstaller` and build the application
+<CodeBlockTabs groupId="install-op" items={["uv", "python.org"]} persist defaultIndex={0}>
+    <CodeBlockTabsList>
+        <CodeBlockTabsTrigger value="uv">uv</CodeBlockTabsTrigger>
+        <CodeBlockTabsTrigger value="python.org">python.org</CodeBlockTabsTrigger>
+    </CodeBlockTabsList>
+    <CodeBlockTab value="uv">
+        ```shell
+        uv add --dev pyinstaller
+        uv run pyinstaller --onefile main.py
+        ```
+    </CodeBlockTab>
+    <CodeBlockTab value="python.org">
+        ```shell
+        pip install pyinstaller
+        pyinstaller --onefile main.py
+        ```
+    </CodeBlockTab>
+</CodeBlockTabs>
+2. Find the executable under `dist/`
+3. Test locally if the executable run correctly (very important!!! Please test the executable you built!!!)
+4. Upload your executable to GitHub Release, with note on what OS and architecture it built for
+5. Put your demo link for your GitHub Release link abd submit!
+
