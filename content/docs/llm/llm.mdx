@@ -1,7 +1,48 @@
 ---
-title: AI/LLM
-description: AI/LLM
+title: AI / LLM
+description: Deploying and sharing projects using Artificial Intelligence or Large Language Models
 ---
 
-<Callout type="warn" title="This is a WIP docs">
+import { Callout } from 'fumadocs-ui/components/callout';
+
+## Requirements
+
+- Reviewers must be able to test your project without setting up complicated environments.
+- A clear interface (web app, CLI, or desktop app) must be provided for interacting with the AI.
+- If your project uses a custom-trained model, it must be easy to download and run without manual setup steps.
+
+<Callout type="warn" title="Hosting restrictions">
+  Hosting platforms like **Hugging Face Spaces, Google Colab, and Kaggle are not allowed**. These platforms require an external account and expects the users to manually run cells. Your project must be a standalone application/website.
 </Callout>
+
+## Public Models
+
+If your project uses popular public models (like OpenAI, Claude, or Llama), we highly recommend using **[Hack Club AI](https://ai.hackclub.com/)** as your provider!
+
+Hack Club AI provides a free, proxied API service for Hack Clubbers,This is the easiest and most reliable way to use LLMs or other public models in your project.
+
+<Callout type="info" title="Third-Party APIs">
+  If you are using other APIs (like OpenAI directly, Anthropics, etc.), ensure you handle API keys securely and that they dont expire.
+</Callout>
+
+## Custom & Local Models
+
+If your project uses a custom-trained model or needs to run a model locally, It must be easy to setup and use.
+
+- Provide an **executable file** or a complete desktop application for people to run.
+- The app should either **already include the model file** or **download it automatically** 
+- **Do not** make reviewers manually download huge `.gguf` or `.safetensors` files, mess with Python dependencies, or change code just to get your model working.
+- Alternatively, if your model is small enough, **running it directly in the browser** (using libraries like [WebLLM](https://webllm.mlc.ai/) or [Transformers.js](https://huggingface.co/docs/transformers.js)) is also a great option.
+
+<Cards>
+  <Card
+    title="Ollama"
+    href="https://ollama.com/"
+    description="If you're building a tool that relies on a local LLM, consider integrating it with Ollama's local API."
+  />
+  <Card
+    title="Web Integration"
+    href="/docs/web/web-apps"
+    description="Instead of local execution, consider wrapping your model in a backend API and building a normal Web App."
+  />
+</Cards>
