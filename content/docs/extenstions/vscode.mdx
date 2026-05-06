@@ -1,7 +1,263 @@
 ---
-title: Visual Studio Code
-description: Publish extentions on Visual Studio Code
+title: VS Code Extensions
+description: Publish extensions on VS Code
+icon: Code
 ---
 
-<Callout type="warn" title="This is a WIP docs">
-</Callout>
+import { Callout } from 'fumadocs-ui/components/callout';
+import { Step, Steps } from 'fumadocs-ui/components/steps';
+
+VS Code Extensions can be made available to the public by publishing them through the VS Code Marketplace, the Open VSX Registry, or distributing them manually via GitHub Releases.
+For Shipwrights, the most important part is that your extension is packaged correctly as a `.vsix` file and submitted through the right channel so it can be reviewed and installed like a real extension.
+
+## Not sure which publishing method to use?
+  -  **VS Code Marketplace**  is the official Microsoft store, requires a one-time publisher setup, and reaches the widest VS Code audience. <br/>
+  -  **Open VSX Registry**  is a free, open alternative used by VS Codium and other editors - no fees required. <br/>
+  -  **GitHub Releases**  is best for direct distribution or when you want full control over versioning without going through a store.<br/>
+
+
+## Requirements
+
+- **`package.json` at the root:** Your extension manifest must be at the root of your project and contain the required VS Code extension fields.
+- **Packaged `.vsix` file:** Your final submission must be a `.vsix` file built using `vsce` or `ovsx`.
+- **Publisher name:** You must have a publisher identity set up before publishing to either marketplace.
+- **Clear listing details:** Your listing should include a proper name, description, icon, and category.
+
+## Before you publish
+Before packaging, double-check that every part of your extension works as intended.
+
+<Steps>
+<Step>
+**Test the extension locally**
+
+Press `F5` in VS Code to launch an Extension Development Host and verify your extension behaves correctly.
+</Step>
+
+<Step>
+**Verify your `package.json`**
+
+Make sure `package.json` is valid and contains all required fields for a VS Code extension.
+A few important things to check:
+- `name`, `displayName`, `version`, and `publisher` are set
+- `engines.vscode` specifies the minimum supported VS Code version
+- `activationEvents`, `contributes`, and any commands are declared correctly
+- The `icon` field points to a valid image file if you have one
+</Step>
+
+<Step>
+**Install the packaging tool**
+
+```bash
+npm install -g @vscode/vsce
+```
+</Step>
+
+<Step>
+**Package the extension**
+
+Run the following command from your project root to produce a `.vsix` file:
+
+```bash
+vsce package
+```
+</Step>
+</Steps>
+
+**You now have a `.vsix` file ready to publish!**
+
+---
+
+## Option 1 — VS Code Marketplace
+
+The official Microsoft marketplace. Requires a free Azure DevOps account and publisher setup.
+
+### Account Setup
+
+<Steps>
+<Step>
+**Create a Microsoft account**
+
+You'll need a Microsoft account to sign in to Azure DevOps and the VS Code Marketplace publisher dashboard.
+</Step>
+
+<Step>
+**Create an Azure DevOps organization**
+
+Go to [dev.azure.com](https://dev.azure.com) and create a new organization. This is needed to generate a Personal Access Token (PAT).
+</Step>
+
+<Step>
+**Generate a Personal Access Token (PAT)**
+
+In your Azure DevOps organization, go to **User Settings → Personal Access Tokens** and create a token with the **Marketplace (Manage)** scope. Copy and save this token — you'll need it to publish.
+</Step>
+
+<Step>
+**Create a publisher**
+
+Go to the [VS Code Marketplace publisher management page](https://marketplace.visualstudio.com/manage) and create a new publisher. The publisher name must match the `publisher` field in your `package.json`.
+</Step>
+</Steps>
+
+### Publishing
+
+<Steps>
+<Step>
+**Log in with your PAT**
+
+```bash
+vsce login <your-publisher-name>
+```
+
+Enter your Personal Access Token when prompted.
+</Step>
+
+<Step>
+**Publish the extension**
+
+```bash
+vsce publish
+```
+
+This packages and uploads your extension to the Marketplace in one step. Alternatively, upload the `.vsix` file manually through the publisher dashboard.
+</Step>
+
+<Step>
+**Wait for the review process**
+
+Microsoft reviews new extensions before they go live. Review time can vary.
+</Step>
+
+<Step>
+**Confirm the listing is live**
+
+Once approved, your extension will appear in the VS Code Marketplace and be installable directly from the VS Code Extensions panel.
+</Step>
+</Steps>
+
+---
+
+## Option 2 — Open VSX Registry
+
+A free, open-source alternative to the VS Code Marketplace, compatible with VS Codium and other editors based on VS Code.
+
+### Account Setup
+
+<Steps>
+<Step>
+**Create an Eclipse Foundation account**
+
+Register at [open-vsx.org](https://open-vsx.org) using your GitHub account or by creating an Eclipse Foundation account.
+</Step>
+
+<Step>
+**Create a namespace**
+
+Your namespace is equivalent to a publisher name. Create one that matches the `publisher` field in your `package.json`.
+</Step>
+
+<Step>
+**Generate an access token**
+
+In your Open VSX account settings, generate an access token. Save it — you'll need it to publish.
+</Step>
+
+<Step>
+**Install the Open VSX publishing tool**
+
+```bash
+npm install -g ovsx
+```
+</Step>
+</Steps>
+
+### Publishing
+
+<Steps>
+<Step>
+**Publish the extension**
+
+```bash
+ovsx publish <your-extension.vsix> -p <your-access-token>
+```
+</Step>
+
+<Step>
+**Confirm the listing is live**
+
+Open VSX does not have a manual review step — your extension should be available on [open-vsx.org](https://open-vsx.org) shortly after upload.
+</Step>
+</Steps>
+
+---
+
+## Option 3 — GitHub Releases
+
+Best for direct distribution, private extensions, or publishing without going through a store.
+
+<Steps>
+<Step>
+**Package the extension**
+
+```bash
+vsce package
+```
+
+This produces a `.vsix` file in your project root.
+</Step>
+
+<Step>
+**Create a GitHub Release**
+
+Go to your repository on GitHub, click **Releases → Draft a new release**, and fill in the tag version and release notes.
+</Step>
+
+<Step>
+**Attach the `.vsix` file**
+
+Upload the `.vsix` file as a release asset before publishing the release.
+</Step>
+
+<Step>
+**Share the install instructions**
+
+Users can install the extension by downloading the `.vsix` file and running:
+
+```bash
+code --install-extension your-extension.vsix
+```
+
+Or by opening VS Code, going to **Extensions → ··· → Install from VSIX**, and selecting the downloaded file.
+</Step>
+</Steps>
+
+---
+
+## Updating your extension
+
+These steps apply regardless of which publishing method you use.
+
+<Steps>
+<Step>
+**Increase the version number**
+
+Every published version must have a higher version number than the previous one. Update the `version` field in `package.json`.
+</Step>
+
+<Step>
+**Repackage the extension**
+
+```bash
+vsce package
+```
+</Step>
+
+<Step>
+**Republish or upload the new release**
+
+Follow the same publishing steps for your chosen method — Marketplace, Open VSX, or a new GitHub Release.
+</Step>
+</Steps>
+
+## Your Demo link
+Make your demo link redirect users to your extension's live Marketplace page, Open VSX listing, or GitHub Releases page depending on your chosen publishing method.
