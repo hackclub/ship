@@ -203,10 +203,19 @@ If you wrote your CLI in a compiled language (Go, Rust, C++) and don't want to u
 2. Zip them up or create `.tar.gz` archives.
 3. Create a new Release on your GitHub repository and upload these files as "Assets".
 
-<Callout type="warn" title="Executable Permissions">
-  If you provide a direct download link for a binary, remind macOS/Linux users in your README that they might need to make the file executable before running it:
+<Callout type="warn" title="Permissions & Gatekeeper">
+  If you provide a direct download link for a binary, you should remind users of necessary post-download steps in your README:
+
+  **Linux & macOS:**
+  Downloaded binaries usually need to be made executable before they can be run:
   ```bash
   chmod +x my-cli
   ./my-cli
+  ```
+
+  **macOS Gatekeeper:**
+  Apple's Gatekeeper may block the execution of downloaded binaries. Users might need to remove the quarantine attribute to run it:
+  ```bash
+  xattr -dr com.apple.quarantine my-cli
   ```
 </Callout>
