@@ -1,7 +1,131 @@
 ---
 title: Other
 description: Publish extentions on Github Releases
+icon: Globe
 ---
 
-<Callout type="warn" title="This is a WIP docs">
+import { Callout } from 'fumadocs-ui/components/callout';
+import { Step, Steps } from 'fumadocs-ui/components/steps';
+
+If your extension cannot be published on the Chrome Web Store or Firefox Add-ons (e.g. rejected, private, experimental, or unsupported), you can distribute it via **GitHub Releases!**.
+
+This method requires you to package your extension into one-click installable formats:
+
+- **Chrome / Chromium browsers:** `.crx`
+- **Firefox:** `.xpi`
+
+This ensures Shipwrights are able to download, install and run your extension without compiling anything manually.
+
+<Callout type="info" title="Building for Chrome or Firefox instead?">
+  If your extension is meant for Chrome, please use the [Chrome guide](/docs/browser-extensions/chrome). 
+  If your extension is meant for Firefox, please use the [Firefox guide](/docs/browser-extensions/firefox) instead.
 </Callout>
+
+<Callout type="warn" title="Important">
+  Extensions distributed this way are NOT verified by browser stores. Users may see warnings during installation. Make sure your README clearly explains how to install the extension.
+</Callout>
+
+
+## Requirements
+
+- **Compiled extension package (`.crx` or `.xpi`)**
+- **GitHub Release with downloadable assets**
+- **Working extension (tested locally)**
+- **Clear installation instructions in README**
+
+
+## Chrome / Chromium Extensions (`.crx`)
+
+Chrome-based browsers use `.crx` files for manual installation.
+ It's a packaged and signed version of your extension which promotes validation.
+- Users typically install via:
+  - drag-and-drop into `chrome://extensions`
+  - or Developer Mode → "Load unpacked"
+
+
+### Compile Chrome Extension to `.crx`
+<Steps>
+<Step>
+**Open Chrome Extensions page**
+
+Enable "Developer Mode"
+</Step>
+
+<Step>
+**Click "Pack Extension"**
+
+Select the right folder of your extension containing your manifest.json
+</Step>
+
+<Step>
+**Generate `.crx` file**
+
+Chrome will output:
+
+- .crx file (your extension)
+- .pem file (private key — keep this safe!)
+
+<Callout type="warn" title="NOTE">
+  Do NOT delete the .pem if you plan to update the extension later.
+</Callout>
+</Step>
+</Steps>
+This works the same way in all chromium based browsers!
+
+
+## Firefox Extensions (`.xpi`)
+
+Firefox uses `.xpi` files:
+
+- `.xpi` is essentially a signed `.zip`
+- Users install by opening the `.xpi` file in Firefox
+
+
+## Compile Firefox Extension to .xpi
+<Steps>
+<Step>
+**Prepre your extension folder**
+
+Ensure manifest.json is in the root and everything works.
+</Step>
+
+<Step>
+**Zip the extension**
+</Step>
+
+<Step>
+**Rename `.zip` to `.xpi`**
+</Step>
+
+<Step>
+**(Optional) Sign via AMO**
+
+For better compatibility, upload to AMO and download the signed .xpi.
+</Step>
+</Steps>
+
+## Upload to Github Releases
+<Steps>
+<Step>
+**Go to your Github Repository**
+</Step>
+
+<Step>
+**Create new release**
+</Step>
+
+<Step>
+**Attach compiled files**
+
+upload the .crx or .xpi file
+</Step>
+
+<Step>
+**Publish release!**
+</Step>
+</Steps>
+
+**Shipwrights should now be able to download and test directly :D**
+
+## Your Demo link
+Make your demo link redirect users to your extension's Github Release link.
