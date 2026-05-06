@@ -1,7 +1,191 @@
 ---
 title: NPM
-description: NPM
+description: Publishing JavaScript and TypeScript packages to npm
 ---
 
-<Callout type="warn" title="This is a WIP docs">
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
+import { Callout } from "fumadocs-ui/components/callout";
+import { Step, Steps } from "fumadocs-ui/components/steps";
+import {
+    CodeBlockTab,
+    CodeBlockTabs,
+    CodeBlockTabsList,
+    CodeBlockTabsTrigger
+} from "fumadocs-ui/components/codeblock";
+
+### Requirements
+
+1. A well-written README explaining what your package does and how to use it.
+2. Ship your project!
+
+You can ship your demo in one of the following methods:
+1. Upload your library/package to https://www.npmjs.com/ (Your demo link should be your npm package URL). You can check the details [here](#npm).
+2. If you are building a CLI application with Node.js, it should still be published to npm or distributed as standalone binaries. See our [CLI guide](/docs/cli) for more details.
+
+If you are building a library, your README must include an example of usage and further explain how it could be used by other developers. Your library must be publicly distributed on https://www.npmjs.com/.
+
+---
+
+### Installing Node.js [step]
+
+You need Node.js and npm (Node Package Manager) installed to publish packages. We recommend using a Node version manager like `fnm`.
+
+<Tabs groupId="install-op" defaultValue="fnm" persist>
+    <TabsList>
+        <TabsTrigger value="fnm">fnm</TabsTrigger>
+        <TabsTrigger value="Installer">Installer</TabsTrigger>
+    </TabsList>
+    <TabsContent value="fnm">
+        1. Install `fnm` (Fast Node Manager)
+        <CodeBlockTabs groupId="os" items={["macOS", "Linux", "Windows"]} persist defaultValue="Linux">
+            <CodeBlockTabsList>
+                <CodeBlockTabsTrigger value="Linux">Linux</CodeBlockTabsTrigger>
+                <CodeBlockTabsTrigger value="macOS">MacOS</CodeBlockTabsTrigger>
+                <CodeBlockTabsTrigger value="Windows">Windows</CodeBlockTabsTrigger>
+            </CodeBlockTabsList>
+            <CodeBlockTab value="Linux">
+                ```shell
+                curl -fsSL https://fnm.vercel.app/install | bash
+                ```
+            </CodeBlockTab>
+            <CodeBlockTab value="macOS">
+                ```shell
+                curl -fsSL https://fnm.vercel.app/install | bash
+                ```
+            </CodeBlockTab>
+            <CodeBlockTab value="Windows">
+                ```shell
+                winget install Schniz.fnm
+                ```
+            </CodeBlockTab>
+        </CodeBlockTabs>
+
+        2. Install the latest LTS version of Node.js
+
+        ```shell
+        fnm use --install-if-missing 20
+        ```
+    </TabsContent>
+    <TabsContent value="Installer">
+        1. Download the installer from https://nodejs.org/
+        2. Run the installer and follow the prompts. npm is included automatically.
+    </TabsContent>
+</Tabs>
+
+### Creating a project [step]
+
+<Steps>
+<Step>
+**Create your project directory**
+
+```shell
+mkdir my-awesome-package
+cd my-awesome-package
+```
+</Step>
+<Step>
+**Initialize `package.json`**
+
+Run the following command to generate a `package.json` file. This file holds all the metadata about your package.
+
+```shell
+npm init
+```
+
+You will be prompted to answer several questions. Most importantly:
+- **package name:** Must be unique on npm! You can use scoped packages like `@yourusername/package-name` to avoid collisions.
+- **version:** Start with `1.0.0`
+- **entry point:** Usually `index.js`
+
+Alternatively, use `npm init -y` to accept all default values.
+</Step>
+<Step>
+**Configure your `package.json`**
+
+Make sure your `package.json` has the correct metadata:
+
+```json title="package.json"
+{
+  "name": "your-unique-package-name",
+  "version": "1.0.0",
+  "description": "A very awesome package",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": ["hackclub", "ship", "awesome"],
+  "author": "Your Name",
+  "license": "MIT"
+}
+```
+</Step>
+<Step>
+**Create a `.npmignore` file**
+
+This file works exactly like `.gitignore` but tells npm which files to *exclude* from your published package. Exclude tests, source maps, and other development files.
+
+```text title=".npmignore"
+node_modules/
+tests/
+.env
+```
+</Step>
+</Steps>
+
+### Write your code [step]
+
+Create your main entry point file (`index.js`).
+
+```javascript title="index.js"
+function sayHello(name) {
+    return `Hello, ${name}! Welcome to Ship!`;
+}
+
+module.exports = {
+    sayHello
+};
+```
+
+Make sure your `README.md` is well-written and includes examples of how to import and use your code!
+
+### Distributing to npm [step] [#npm]
+
+1. Create an account on [npmjs.com](https://www.npmjs.com/signup).
+2. Open your terminal and log in using your credentials:
+
+```shell
+npm login
+```
+
+3. (Optional but recommended) Test what files will be included in your package before publishing:
+
+```shell
+npm pack --dry-run
+```
+
+4. Publish your package to the npm registry:
+
+```shell
+npm publish
+```
+
+<Callout type="info" title="Publishing scoped packages">
+  If you named your package `@yourusername/package-name`, npm assumes it is a private package by default. To publish a scoped package publicly (which is required for Ship), run:
+  
+  `npm publish --access public`
 </Callout>
+
+5. Go to `https://www.npmjs.com/package/your-package-name`. This URL is your demo link!
+
+---
+
+## Updating your package
+
+If you make changes to your code and want to publish an update, you must bump the version number in your `package.json`. You cannot overwrite an existing version on npm.
+
+Use the `npm version` command to update the version automatically:
+
+```shell
+npm version patch # Bumps 1.0.0 to 1.0.1
+npm publish
+```
