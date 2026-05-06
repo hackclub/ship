@@ -1,7 +1,138 @@
 ---
 title: Hardware
-description: Hardware
+description: Submitting and Reviewing Hardware Projects
+icon: Cpu
 ---
 
-<Callout type="warn" title="This is a WIP docs">
+import { Callout } from 'fumadocs-ui/components/callout';
+import { Step, Steps } from 'fumadocs-ui/components/steps';
+
+Hardware projects are physical or electronics-based builds such as PCBs, circuits, embedded devices etc..
+The most important part is that the project is **clearly documented, reproducible, and verifiable through real evidence (builds, schematics, or demos)**.
+
+Unlike software, hardware cannot always be “run,” so submissions must provide enough proof that the project works and can be understood without guesswork.
+
+<Callout type="info" title="Firmware-only projects">
+  If your project is purely firmware (e.g. ESP32/Arduino code without a physical build), you can still submit it, but you must include a proper demo (such as a simulation or runtime demonstration).
 </Callout>
+
+---
+
+## Requirements
+
+- **Working proof of the project** (PCB, circuit, or demo)
+- **Tracked development (Hackatime / Lapse)**
+- **Clear documentation (schematics, diagrams, or explanation)**
+- **Firmware (if the project is physically built)**
+- **No vague or unverifiable submissions**
+- **demo videos to be uploaded to youtube or added in your github repo.**
+
+---
+
+## What You Can Submit
+
+### PCB / Schematics Projects
+
+- Completed PCB designs
+- Circuit schematics (KiCad, EasyEDA, etc.)
+- Must be tracked with Hackatime or Lapse
+
+<Callout type="info">
+  If your project is digital-only (no physical build), you MUST provide a schematic.
+</Callout>
+
+---
+
+### Physical Builds
+
+- Soldered PCBs
+- Fully assembled circuits
+- Breadboard-based builds (with proper diagram)
+
+Must include:
+- A **lapse or recording** of the build process (soldering, assembling, etc.)
+- A **demo video showing the working project**
+
+---
+
+### Breadboard Projects
+
+- Allowed **only if** accompanied by a **clear wiring diagram**
+
+<Callout type="warn">
+  Random or messy breadboard builds without a proper diagram will be rejected instantly.
+</Callout>
+
+---
+
+## What Is NOT Allowed
+
+-  Lapse of just “messing around” with breadboards
+-  Pure simulations (unless the project is firmware-only)
+-  No proof of functionality
+-  Google Drive demo links (use proper platforms like GitHub, YouTube, etc.)
+
+---
+
+## Demo Requirements
+
+Your demo is one of the most important parts of a hardware submission.
+
+### If your project is physical:
+
+- Show the **actual device working**
+- Demonstrate:
+  - inputs (buttons, sensors, etc.)
+  - outputs (LEDs, displays, motors, etc.)
+- Clearly explain what is happening
+- Record it and upload it to youtube or add it in your github page.
+
+---
+
+### If your project is virtual (not built yet):
+
+- Provide a walkthrough demo
+- Use simulation tools (e.g. Wokwi) **only if no physical version exists**
+
+---
+
+## Firmware Requirement
+
+- If your project is physically built → **firmware is required**
+- Firmware should:
+  - be included in the repository
+  - match the demonstrated behavior
+  - be runnable or readable
+
+<Callout type="warn">
+  A physical hardware project without firmware will be rejected.
+</Callout>
+
+---
+
+## Schematics Requirement
+
+- If your project is **physically built**, schematics are **optional**
+- If your project is **not physically built**, schematics are **required**
+
+---
+
+## Case / Enclosure (Optional)
+
+- If your project includes a case:
+  - It should be included in the repo
+  - If provided → it should be **printable/buildable**
+
+- If the case is not a major part of the project, it is optional
+
+## Github Release
+You must make a Github release which includes your PCB design, build, schematics, diagram, etc.
+Your readme must also be clear and should explain properly your harware project.
+
+## Your demo link
+Make your demo link redirect users to your project's:
+- Youtube video link, if posted on youtube
+- Github link if demo video was added to your release
+- Github release link consisting of ***PCB/build/schematic/wiring-digram/simulation***  if there was no physical build.
+
+**If a project lacks proof, clarity, or reproducibility, it should be fixed before submission.**
