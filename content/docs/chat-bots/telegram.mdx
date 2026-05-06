@@ -1,7 +1,314 @@
 ---
 title: Telegram Bots
-description: Telegram Bots
+description: Publishing and shipping Telegram bots
 ---
 
-<Callout type="warn" title="This is a WIP docs">
+import { Callout } from 'fumadocs-ui/components/callout';
+import { Step, Steps } from 'fumadocs-ui/components/steps';
+
+Telegram bots are automated accounts on Telegram that can respond to messages, handle commands, send media, run inline queries, and interact with users through buttons and menus. For this guide, the most important part is that Shipwrights can open your bot in Telegram and start interacting with it immediately - no setup required on their end.
+
+## Requirements
+
+- **Your bot must be live and reachable.** Provide a `t.me/YourBotName` link so reviewers can start a conversation with the bot instantly.
+- **Include a clear list of commands** in your `README.md` so reviewers know what to test.
+- **The bot must respond** to at least a `/start` and `/help` command immediately.
+- **The bot must be hosted and running 24/7**.
+- **Do not submit bots that only work locally.** Your bot must be deployed to a server.
+
+<Callout type="warn" title="Do not submit source-only projects">
+  Reviewers will not clone your repo, get their own bot token from BotFather, and run your code locally. Your bot must be live and reachable via a Telegram link. The `t.me/YourBotName` link is your demo link.
+</Callout>
+
+<Callout type="info" title="Your demo link">
+  Your demo link for Ship should be **`https://t.me/YourBotName`** - the direct link to your bot on Telegram. Anyone clicking this link can immediately start interacting with it.
+</Callout>
+
+---
+
+## Creating a Telegram Bot
+
+Telegram bot creation is done entirely through a special bot called **BotFather**.
+
+<Steps>
+<Step>
+
+### Talk to BotFather
+
+Open Telegram and search for [@BotFather](https://t.me/BotFather) (or click the link). Start a conversation and send the `/newbot` command.
+
+</Step>
+<Step>
+
+### Name your bot
+
+BotFather will ask you for two things:
+
+1. **A display name** for your bot (e.g., "My Awesome Bot") - this can be anything.
+2. **A username** for your bot (e.g., `my_awesome_bot`) - this must end in `bot` and be unique across all of Telegram.
+
+</Step>
+<Step>
+
+### Copy your bot token
+
+After creating the bot, BotFather will give you an **API token** (a long string like `123456789:ABCDefGHIjklMNOpqrsTUVwxyz`). Copy it - you'll need this in your code.
+
+<Callout type="error" title="Never share your bot token!">
+  Your bot token gives full control over your bot. Anyone with the token can read messages, send messages, and modify your bot. Never commit it to GitHub. Use environment variables instead. If your token is ever leaked, send `/revoke` to BotFather immediately to generate a new one.
+</Callout>
+
+</Step>
+<Step>
+
+### Set up bot commands (recommended)
+
+Send `/setcommands` to BotFather, select your bot, and send a list of commands in this format:
+
+```
+start - Start the bot and get a welcome message
+help - List all available commands
+```
+
+This makes your commands appear in Telegram's command menu when users type `/`, giving your bot a much more polished feel.
+
+</Step>
+<Step>
+
+### Set a description and about text
+
+Use `/setdescription` and `/setabouttext` with BotFather to give your bot a description that appears when users first discover it. This makes your bot look professional!
+
+</Step>
+</Steps>
+
+---
+
+## Building Your Bot
+
+Here are step-by-step guides for the most popular Telegram bot libraries:
+
+### python-telegram-bot (Python)
+
+The most popular and well-documented Python library for Telegram bots.
+
+<Steps>
+<Step>
+
+**Set up your project**
+
+```bash
+mkdir my-telegram-bot && cd my-telegram-bot
+python3 -m venv .venv
+source .venv/bin/activate   # On Windows: .venv\Scripts\activate
+pip install python-telegram-bot
+```
+
+Or with `uv`:
+
+```bash
+uv init my-telegram-bot
+cd my-telegram-bot
+uv add python-telegram-bot
+```
+
+</Step>
+<Step>
+
+**Create your bot file**
+
+Create a `bot.py` file:
+
+```python title="bot.py"
+import os
+from telegram import Update
+from telegram.ext import Application, CommandHandler, MessageHandler, filters, ContextTypes
+
+TOKEN = os.environ["TELEGRAM_BOT_TOKEN"]
+
+async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    await update.message.reply_text(
+        "Hey there! I'm alive and ready to go!\n\n"
+        "Use /help to see what I can do."
+    )
+
+async def help_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    await update.message.reply_text(
+        "Here's what I can do:\n\n"
+        "• /start - Start the bot\n"
+        "• /help - Show this message\n"
+        "• /ping - Check if I'm alive\n"
+        "• Send me any text - I'll echo it back!"
+    )
+
+async def ping(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    await update.message.reply_text("Ping pong")
+
+async def echo(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    await update.message.reply_text(f"You said: {update.message.text}")
+
+def main():
+    app = Application.builder().token(TOKEN).build()
+
+    app.add_handler(CommandHandler("start", start))
+    app.add_handler(CommandHandler("help", help_command))
+    app.add_handler(CommandHandler("ping", ping))
+    app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, echo))
+
+    print("Bot is running!")
+    app.run_polling()
+
+if __name__ == "__main__":
+    main()
+```
+
+</Step>
+<Step>
+
+**Run the bot**
+
+```bash
+TELEGRAM_BOT_TOKEN=your_token python bot.py
+```
+
+Or with `uv`:
+
+```bash
+TELEGRAM_BOT_TOKEN=your_token uv run bot.py
+```
+
+</Step>
+</Steps>
+
+### grammy (JavaScript / TypeScript)
+
+A modern, fast, and well-designed framework for building Telegram bots in JS/TS.
+
+<Steps>
+<Step>
+
+**Initialize your project**
+
+```bash
+mkdir my-telegram-bot && cd my-telegram-bot
+npm init -y
+npm install grammy
+```
+
+</Step>
+<Step>
+
+**Create your bot file**
+
+Create an `index.js` file:
+
+```javascript title="index.js"
+const { Bot } = require('grammy');
+
+const bot = new Bot(process.env.TELEGRAM_BOT_TOKEN);
+
+bot.command('start', (ctx) =>
+  ctx.reply('Hey there! I\'m alive and ready to go!\n\nUse /help to see what I can do.')
+);
+
+bot.command('help', (ctx) =>
+  ctx.reply(
+    'Here\'s what I can do:\n\n' +
+    '• /start - Start the bot\n' +
+    '• /help - Show this message\n' +
+    '• /ping - Check if I\'m alive\n' +
+    '• Send me any text - I\'ll echo it back!'
+  )
+);
+
+bot.command('ping', (ctx) => ctx.reply('Ping pong'));
+
+bot.on('message:text', (ctx) => ctx.reply(`You said: ${ctx.message.text}`));
+
+bot.start();
+console.log('Bot is running!');
+```
+
+</Step>
+<Step>
+
+**Run the bot**
+
+```bash
+TELEGRAM_BOT_TOKEN=your_token node index.js
+```
+
+</Step>
+</Steps>
+
+<Callout type="info" title="Other languages and frameworks">
+  Telegram has excellent bot libraries for virtually every language:
+
+  - **Go:** [telebot](https://github.com/tucnak/telebot) or [gotgbot](https://github.com/PaulSonOfLars/gotgbot)
+  - **Rust:** [teloxide](https://github.com/teloxide/teloxide)
+  - **Java/Kotlin:** [TelegramBots](https://github.com/rubenlagus/TelegramBots)
+  - **C#:** [Telegram.Bot](https://github.com/TelegramBots/Telegram.Bot)
+
+  The concepts are the same across all libraries - use whatever you're most comfortable with!
+</Callout>
+
+---
+
+## Polling vs. Webhooks
+
+Telegram bots can receive updates in two ways:
+
+| | Polling | Webhooks |
+|---|---|---|
+| **How it works** | Your bot constantly asks Telegram "any new messages?" | Telegram pushes new messages to your server |
+| **Requires public URL?** | No | Yes (HTTPS) |
+| **Best for** | Development, simple deployments | Production, high-traffic bots |
+| **Setup difficulty** | Easy | Moderate |
+
+<Callout type="info">
+  For Ship submissions, **polling mode is perfectly fine** and is much simpler to set up. All the code examples above use polling. Only switch to webhooks if you need better performance for a high-traffic bot.
+</Callout>
+
+---
+
+## Hosting Your Bot
+
+Your bot must be online for Shipwrights to test it, you can either using #nest (a free hosting platform for all the teens on hackclub) or use your VPS
+
+
+
+<Callout type="info" title="Using environment variables">
+  Never hardcode your bot token. Use your hosting platform's secrets/environment variables to store `TELEGRAM_BOT_TOKEN`. Locally, use a `.env` file and make sure it's in your `.gitignore`.
+</Callout>
+
+---
+
+## Making Your Bot Stand Out
+
+Here are some features that make a Telegram bot submission really shine:
+
+- **Inline keyboards** - Add interactive buttons to messages instead of requiring typed commands.
+- **Inline mode** - Let users type `@YourBot query` in any chat to use your bot without opening a DM.
+- **Rich media** - Send photos, GIFs, stickers, documents, or formatted text with Markdown/HTML.
+- **Conversation flows** - Use `ConversationHandler` (python-telegram-bot) or `conversations` (grammy) to build multi-step interactions.
+- **Persistent data** - Store user preferences or data using a database so the bot remembers users between restarts.
+
+---
+
+## Troubleshooting
+
+<Callout type="warn" title="Bot is not responding at all?">
+  Make sure your bot process is actually running on your server. Check logs for any crash errors. Verify that your `TELEGRAM_BOT_TOKEN` environment variable is set correctly. Try sending `/start` as the very first message.
+</Callout>
+
+<Callout type="warn" title="Getting 'Conflict: terminated by other getUpdates request'?">
+  This means two instances of your bot are running at the same time and both are trying to poll for updates. Stop any duplicate processes. Only one instance should be polling at a time.
+</Callout>
+
+<Callout type="error" title="Bot token revoked or invalid?">
+  If you accidentally leaked your token, BotFather may have revoked it, or you may have revoked it yourself. Go to BotFather, use `/mybots`, select your bot, and generate a new token with "API Token" → "Revoke current token".
+</Callout>
+
+<Callout type="info" title="Commands not showing in the menu?">
+  You need to register your commands with BotFather using `/setcommands`, or programmatically via the `setMyCommands` API method. The command menu won't appear until commands are registered.
 </Callout>
