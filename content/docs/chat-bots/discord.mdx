@@ -1,7 +1,289 @@
 ---
 title: Discord Bots
-description: Discord Bot    
+description: Publishing and shipping Discord bots
 ---
 
-<Callout type="warn" title="This is a WIP docs">
+import { Callout } from 'fumadocs-ui/components/callout';
+import { Step, Steps } from 'fumadocs-ui/components/steps';
+
+Discord bots are automated programs that run inside Discord servers, responding to commands, moderating chats, playing music, or doing just about anything you can imagine. For this guide, the most important part is that Shipwrights can easily invite your bot, interact with it, and verify that it works without needing to self-host or configure anything themselves.
+
+## Requirements
+
+- **Your bot must be online and in a server.** Provide a server invite link where reviewers can test the bot.
+- **Include a clear list of commands** in your `README.md` so reviewers know what to test.
+- **If your bot requires specific permissions**, document them clearly and explain why they are needed.
+- **Do not submit bots that only work locally.** Your bot needs to be hosted and running 24/7.
+
+<Callout type="warn" title="Do not submit source-only projects">
+  Reviewers will not clone your repo, install dependencies, create a bot application, and run your code locally. Your bot must be live and in a server. The server invite link is your demo link.
+</Callout>
+
+<Callout type="info" title="Your demo link">
+  Your demo link for Ship should be the **Discord server invite link** where your bot is already active and ready to be tested.
+</Callout>
+
+---
+
+## Creating a Discord Bot Application
+
+Before writing any code, you need to register a bot on Discord's Developer Portal.
+
+<Steps>
+<Step>
+
+### Create an application
+
+Go to the [Discord Developer Portal](https://discord.com/developers/applications) and click **"New Application"**. Give it a name and accept the terms of service.
+
+</Step>
+<Step>
+
+### Create a bot user
+
+In your application's settings, go to the **"Bot"** tab on the left sidebar and click **"Add Bot"**. This creates the actual bot user that will appear in servers.
+
+</Step>
+<Step>
+
+### Copy your bot token
+
+On the Bot page, click **"Reset Token"** to generate a new token, then copy it. You will need this in your code to log in as the bot.
+
+<Callout type="error" title="Never share your bot token!">
+  Your bot token is like a password. Anyone with your token can control your bot. Never commit it to GitHub, paste it in chat, or include it in your source code. Use environment variables instead.
+</Callout>
+
+</Step>
+<Step>
+
+### Enable Privileged Intents (if needed)
+
+Still on the Bot page, scroll down to **"Privileged Gateway Intents"**. If your bot needs to read message content, track member joins, or see presence updates, toggle the relevant intents on:
+
+- **Message Content Intent** - Required if your bot reads message text (prefix commands like `!help`).
+- **Server Members Intent** - Required if your bot tracks member joins/leaves.
+- **Presence Intent** - Required if your bot tracks online/offline status.
+
+<Callout type="info">
+  If you only use slash commands and don't read message content, you likely don't need any privileged intents.
+</Callout>
+
+</Step>
+<Step>
+
+### Generate an invite link
+
+Go to the **"OAuth2"** tab, then **"URL Generator"**. Select the `bot` scope (and `applications.commands` if you use slash commands). Then select the permissions your bot needs in the **"Bot Permissions"** section below. Copy the generated URL at the bottom - this is your invite link and your demo link for Ship.
+
+</Step>
+</Steps>
+
+---
+
+## Building Your Bot
+
+Here are step-by-step guides for the two most popular Discord bot libraries:
+
+### discord.js (JavaScript / TypeScript)
+
+<Steps>
+<Step>
+
+**Initialize your project**
+
+```bash
+mkdir my-discord-bot && cd my-discord-bot
+npm init -y
+npm install discord.js
+```
+
+</Step>
+<Step>
+
+**Create your bot file**
+
+Create an `index.js` file with a basic bot that responds to a slash command:
+
+```javascript title="index.js"
+const { Client, GatewayIntentBits, REST, Routes, SlashCommandBuilder } = require('discord.js');
+
+const client = new Client({
+  intents: [GatewayIntentBits.Guilds]
+});
+
+client.once('ready', () => {
+  console.log(`Logged in as ${client.user.tag}!`);
+});
+
+client.on('interactionCreate', async (interaction) => {
+  if (!interaction.isChatInputCommand()) return;
+
+  if (interaction.commandName === 'ping') {
+    await interaction.reply('Ping pong!');
+  }
+
+  if (interaction.commandName === 'help') {
+    await interaction.reply('Available commands:\n• `/ping` - Check if the bot is alive\n• `/help` - Show this message');
+  }
+});
+
+client.login(process.env.DISCORD_TOKEN);
+```
+
+</Step>
+<Step>
+
+**Register slash commands**
+
+Create a `deploy-commands.js` file to register your commands with Discord:
+
+```javascript title="deploy-commands.js"
+const { REST, Routes, SlashCommandBuilder } = require('discord.js');
+
+const commands = [
+  new SlashCommandBuilder().setName('ping').setDescription('Check if the bot is alive'),
+  new SlashCommandBuilder().setName('help').setDescription('List all available commands'),
+].map(command => command.toJSON());
+
+const rest = new REST({ version: '10' }).setToken(process.env.DISCORD_TOKEN);
+
+(async () => {
+  await rest.put(
+    Routes.applicationCommands(process.env.CLIENT_ID),
+    { body: commands },
+  );
+  console.log('Slash commands registered!');
+})();
+```
+
+Run it once to register your commands:
+
+```bash
+CLIENT_ID=your_app_id DISCORD_TOKEN=your_token node deploy-commands.js
+```
+
+</Step>
+<Step>
+
+**Run the bot**
+
+```bash
+DISCORD_TOKEN=your_token node index.js
+```
+
+</Step>
+</Steps>
+
+### discord.py (Python)
+
+<Steps>
+<Step>
+
+**Set up your project**
+
+```bash
+mkdir my-discord-bot && cd my-discord-bot
+python3 -m venv .venv
+source .venv/bin/activate   # On Windows: .venv\Scripts\activate
+pip install discord.py
+```
+
+Or if you use `uv`:
+
+```bash
+uv init my-discord-bot
+cd my-discord-bot
+uv add discord.py
+```
+
+</Step>
+<Step>
+
+**Create your bot file**
+
+Create a `bot.py` file with a basic slash command bot:
+
+```python title="bot.py"
+import os
+import discord
+from discord import app_commands
+
+intents = discord.Intents.default()
+client = discord.Client(intents=intents)
+tree = app_commands.CommandTree(client)
+
+@tree.command(name="ping", description="Check if the bot is alive")
+async def ping(interaction: discord.Interaction):
+    await interaction.response.send_message("Ping pong!")
+
+@tree.command(name="help", description="List all available commands")
+async def help_command(interaction: discord.Interaction):
+    await interaction.response.send_message(
+        "Available commands:\n• `/ping` - Check if the bot is alive\n• `/help` - Show this message"
+    )
+
+@client.event
+async def on_ready():
+    await tree.sync()
+    print(f"Logged in as {client.user}!")
+
+client.run(os.environ["DISCORD_TOKEN"])
+```
+
+</Step>
+<Step>
+
+**Run the bot**
+
+```bash
+DISCORD_TOKEN=your_token python bot.py
+```
+
+Or with `uv`:
+
+```bash
+DISCORD_TOKEN=your_token uv run bot.py
+```
+
+</Step>
+</Steps>
+
+<Callout type="info" title="Other languages">
+  Discord has community libraries for almost every language - Rust ([serenity](https://github.com/serenity-rs/serenity)), Go ([discordgo](https://github.com/bwmarrin/discordgo)), Java ([JDA](https://github.com/discord-jda/JDA)), and more. The concepts are the same: create an application, get a token, connect, and handle events. Use whichever language you're most comfortable with!
+</Callout>
+
+---
+
+
+## Hosting Your Bot
+
+Your bot must be online for Shipwrights to test it, you can either using #nest (a free hosting platform for all the teens on hackclub) or use your VPS
+
+<Callout type="warn" title="Avoid platforms that sleep">
+  Some platforms (like Render's free tier) spin down after inactivity, which means your bot will go offline and won't respond when reviewers test it. Make sure your hosting keeps the bot running 24/7.
+</Callout>
+
+<Callout type="info" title="Using environment variables">
+  Never hardcode your bot token. Every hosting platform supports environment variables or secrets - use them to store your `DISCORD_TOKEN`. Locally, you can use a `.env` file with a library like `dotenv` (make sure `.env` is in your `.gitignore`!).
+</Callout>
+
+---
+
+## Troubleshooting
+
+<Callout type="warn" title="Bot is online but not responding to commands?">
+  Make sure you have registered your slash commands using the command registration script. Slash commands won't appear until they are registered with Discord's API. Also check that you selected the `applications.commands` scope in your OAuth2 invite URL.
+</Callout>
+
+<Callout type="warn" title="Bot can't read messages?">
+  If you're using prefix commands (like `!help`), you need to enable the **Message Content Intent** in the Developer Portal under Bot settings. Without it, your bot won't receive message content in servers with more than 100 members.
+</Callout>
+
+<Callout type="error" title="Getting a 'disallowed intents' error?">
+  You've requested an intent in your code that isn't enabled in the Developer Portal. Go to the Bot tab and toggle on the intents your code requires.
+</Callout>
+
+<Callout type="info" title="Slash commands not showing up?">
+  Global slash commands can take up to an hour to propagate. For instant testing, register commands to a specific guild (server) instead using guild-specific routes. Switch to global registration before you submit.
 </Callout>
