@@ -1,8 +1,65 @@
 ---
-title: Android
-description: Android Apps
+title: Android W
+description: Android Apps WIP!
 ---
+Overview [#overview]
+
+<Callout type="warn" title="this is WIP">
+ working on it :)
+</Callout> 
+
 Android apps are the application which i can be installed in most of the modern andriod smartphones through any source ,For this guide, the most important part is that Shipwrights can easily download, install, and test your app using the provided APK file without complicated setup steps.For this guide, the most important part is that Shipwrights can easily download, install, and test your app using the provided APK file without complicated setup steps.
+
+Requirements [#requirements]
+
+* Provide an apk downloadable release on Github releases
+* The app must launch on Android Smartphone with out any prior setup 
+* If your app doesnt works without disabling **Play Protect** specify that in your README!
+* If the app uses authentication, users must be able to create accounts and log in
+
+
+Publishing Options [#publishing-options]
+
+You need to publish it on a GitHub Release for `.apk`
+
+How to Get APK [#how-to-get-apk] 
+
+<Steps>
+  <Step>
+  Open Your Project(#open-your-project)
+  Open your Android project in Android Studio.
+  </Step>
+
+  <Step>
+   Go to Build Option
+   Top menu: Build → Generate Signed Bundle / APK → Click APk
+
+
+   </Step>
+
+    <Step>
+   Create or Choose Keystore
+   If first time: Click Create new → Save .jks file → Add password → Add alias
+
+    <Callout type="warn" title="Keep this file safe.">
+  Reviewers need a runnable app, not just a repository link. Publish a Github release that can be downloaded and launched directly; don't only mention how to build this app in the README.
+  Please provide either a .dmg file  or a .zip file of your .app file.
+</Callout>
+
+   </Step>
+  
+   
+ 
+
+  
+
+
+   <Step>
+    Choose Release Build
+    Select: release → Then click Finish.
+
+ </Step>
+
 
 <Callout type="warn" title="Do not submit source-only builds">
  Reviewers need a runnable app, not just a repository link. Publish a release artifact or installer on Github releases that can be downloaded and launched directly
