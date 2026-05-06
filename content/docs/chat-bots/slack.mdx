@@ -1,7 +1,290 @@
 ---
 title: Slack Bots
-description: Slack Bots
+description: Publishing and shipping Slack bots and apps
 ---
 
-<Callout type="warn" title="This is a WIP docs">
+import { Callout } from 'fumadocs-ui/components/callout';
+import { Step, Steps } from 'fumadocs-ui/components/steps';
+
+Slack bots are automated programs that live inside Slack workspaces. They can respond to messages, react to events, post updates, run slash commands, and interact with users through buttons and modals. For this guide, the most important part is that Shipwrights can easily install your bot into a test workspace and interact with it right away.
+
+## Requirements
+
+- **Your bot must be installed in a workspace.** Provide a Slack workspace invite link where reviewers can test the bot.
+- **Include a clear list of commands** and features in your `README.md` so reviewers know what to test.
+- **The bot must be hosted and online.** Slack bots require a server to receive events and respond.
+- **If your bot needs specific Slack permissions (scopes)**, document them clearly in your README.
+
+<Callout type="warn" title="Do not submit source-only projects">
+  Reviewers will not clone your repo, set up Slack API credentials, and run your bot locally. Your bot must be live and active in a workspace. The workspace invite link is your demo link.
+</Callout>
+
+<Callout type="info" title="Your demo link">
+  Your demo link for Ship should be the **invite link to a Slack workspace** where the bot is already active and reviewers can test it.
+</Callout>
+
+---
+
+## Creating a Slack App
+
+Before writing any code, you need to register an app on Slack's platform.
+
+<Steps>
+<Step>
+
+### Create a new Slack App
+
+Go to the [Slack API Dashboard](https://api.slack.com/apps) and click **"Create New App"**. Choose **"From scratch"**, give your app a name, and select the workspace you want to develop in.
+
+</Step>
+<Step>
+
+### Configure Bot Token Scopes
+
+Go to **"OAuth & Permissions"** in the left sidebar. Scroll down to **"Scopes"** and add the Bot Token Scopes your app needs. Common scopes include:
+
+- `chat:write` - Send messages as the bot
+- `commands` - Register and handle slash commands
+- `app_mentions:read` - Respond when someone @mentions your bot
+- `channels:read` - View basic channel info
+- `im:history` - Read DMs sent to the bot
+- `reactions:write` - Add emoji reactions to messages
+
+<Callout type="info">
+  Only add the scopes your bot actually needs. Requesting excessive permissions may deter users from installing your bot.
+</Callout>
+
+</Step>
+<Step>
+
+### Install to your workspace
+
+Still on the **"OAuth & Permissions"** page, click **"Install to Workspace"** at the top. Authorize the app, and you'll receive a **Bot User OAuth Token** (starts with `xoxb-`). Copy it - you'll need it in your code.
+
+<Callout type="error" title="Never share your bot token!">
+  Your bot token grants full access to your bot's permissions in the workspace. Never commit it to GitHub or paste it anywhere public. Use environment variables.
+</Callout>
+
+</Step>
+<Step>
+
+### Enable Event Subscriptions (if needed)
+
+If your bot needs to respond to events (like messages, reactions, or channel activity), go to **"Event Subscriptions"** and toggle it on. You'll need to provide a **Request URL** - this is the public URL of your server where Slack will send event payloads.
+
+Your server must respond to Slack's URL verification challenge. Most frameworks (like Bolt) handle this automatically.
+
+</Step>
+<Step>
+
+### Set up Slash Commands (if needed)
+
+Go to **"Slash Commands"** in the sidebar and click **"Create New Command"**. Fill in:
+
+- **Command:** e.g., `/hello`
+- **Request URL:** Your server's endpoint that handles this command
+- **Short Description:** What the command does
+
+</Step>
+</Steps>
+
+---
+
+## Building Your Bot
+
+The recommended way to build Slack bots is with the official **Bolt framework**, which is available in JavaScript, Python, and Java.
+
+### Bolt for JavaScript
+
+<Steps>
+<Step>
+
+**Initialize your project**
+
+```bash
+mkdir my-slack-bot && cd my-slack-bot
+npm init -y
+npm install @slack/bolt
+```
+
+</Step>
+<Step>
+
+**Create your bot file**
+
+Create an `app.js` file:
+
+```javascript title="app.js"
+const { App } = require('@slack/bolt');
+
+const app = new App({
+  token: process.env.SLACK_BOT_TOKEN,
+  signingSecret: process.env.SLACK_SIGNING_SECRET,
+  appToken: process.env.SLACK_APP_TOKEN,
+  socketMode: true, // Use Socket Mode for easier development
+});
+
+// Respond to a slash command
+app.command('/hello', async ({ command, ack, respond }) => {
+  await ack();
+  await respond(`Hii, <@${command.user_id}>! `);
+});
+
+// Respond when the bot is mentioned
+app.event('app_mention', async ({ event, say }) => {
+  await say(`Hello <@${event.user}>! How can I help you?`);
+});
+
+// Respond to a specific message
+app.message('help', async ({ message, say }) => {
+  await say(
+    `Here's what I can do:\n• \`/hello\` - Say hello!\n• Mention me - I'll respond!\n• Type "help" - Show this message`
+  );
+});
+
+(async () => {
+  await app.start(process.env.PORT || 3000);
+  console.log('⚡️ Slack bot is running!');
+})();
+```
+
+</Step>
+<Step>
+
+**Enable Socket Mode (recommended for easy setup)**
+
+In the Slack API dashboard, go to **"Socket Mode"** and enable it. This lets your bot receive events over a WebSocket connection instead of needing a public URL during development.
+
+You'll need to generate an **App-Level Token** with the `connections:write` scope. Copy the token (starts with `xapp-`).
+
+</Step>
+<Step>
+
+**Run the bot**
+
+```bash
+SLACK_BOT_TOKEN=xoxb-your-token \
+SLACK_SIGNING_SECRET=your-signing-secret \
+SLACK_APP_TOKEN=xapp-your-app-token \
+node app.js
+```
+
+</Step>
+</Steps>
+
+### Bolt for Python
+
+<Steps>
+<Step>
+
+**Set up your project**
+
+```bash
+mkdir my-slack-bot && cd my-slack-bot
+python3 -m venv .venv
+source .venv/bin/activate
+pip install slack_bolt
+```
+
+Or with `uv`:
+
+```bash
+uv init my-slack-bot
+cd my-slack-bot
+uv add slack_bolt
+```
+
+</Step>
+<Step>
+
+**Create your bot file**
+
+Create an `app.py` file:
+
+```python title="app.py"
+import os
+from slack_bolt import App
+from slack_bolt.adapter.socket_mode import SocketModeHandler
+
+app = App(token=os.environ["SLACK_BOT_TOKEN"])
+
+@app.command("/hello")
+def handle_hello(ack, command, respond):
+    ack()
+    respond(f"Hey there, <@{command['user_id']}>!")
+
+@app.event("app_mention")
+def handle_mention(event, say):
+    say(f"Hello <@{event['user']}>! How can I help you?")
+
+@app.message("help")
+def handle_help(message, say):
+    say(
+        "Here's what I can do:\n"
+        "• `/hello` - Say hello!\n"
+        "• Mention me - I'll respond!\n"
+        "• Type \"help\" - Show this message"
+    )
+
+if __name__ == "__main__":
+    handler = SocketModeHandler(app, os.environ["SLACK_APP_TOKEN"])
+    handler.start()
+```
+
+</Step>
+<Step>
+
+**Run the bot**
+
+```bash
+SLACK_BOT_TOKEN=xoxb-your-token \
+SLACK_APP_TOKEN=xapp-your-app-token \
+python app.py
+```
+
+Or with `uv`:
+
+```bash
+SLACK_BOT_TOKEN=xoxb-your-token \
+SLACK_APP_TOKEN=xapp-your-app-token \
+uv run app.py
+```
+
+</Step>
+</Steps>
+
+<Callout type="info" title="Socket Mode vs. HTTP Mode">
+  **Socket Mode** is easiest for getting started - your bot connects to Slack via WebSocket, so you don't need a public URL or to deal with SSL certificates. However, for production hosting, you may want to switch to **HTTP Mode** with a public endpoint. Both work fine for Ship submissions as long as the bot is online.
+</Callout>
+
+---
+
+
+
+## Hosting Your Bot
+
+Your bot must be online for Shipwrights to test it, you can either using #nest (a free hosting platform for all the teens on hackclub) or use your VPS
+
+<Callout type="warn" title="Avoid platforms that sleep">
+  Slack bots need to maintain a persistent connection (especially in Socket Mode). If your hosting platform spins down after inactivity, your bot will go offline. Make sure your bot is running 24/7.
+</Callout>
+
+<Callout type="info" title="Using environment variables">
+  Never hardcode your tokens. Use your hosting platform's secrets/environment variables feature to store `SLACK_BOT_TOKEN`, `SLACK_SIGNING_SECRET`, and `SLACK_APP_TOKEN`. Locally, use a `.env` file and add it to `.gitignore`.
+</Callout>
+
+---
+
+## Troubleshooting
+
+<Callout type="warn" title="Bot is not responding to slash commands?">
+  Make sure your slash command's Request URL points to the correct endpoint on your server. If using Socket Mode, verify that your App-Level Token is correct and has the `connections:write` scope. Also confirm the command is saved in the Slack API dashboard.
+</Callout>
+
+<Callout type="warn" title="Events not being received?">
+  Check that Event Subscriptions are enabled and the correct events are subscribed to. If using HTTP mode, verify your Request URL is publicly accessible and responding with a `200` status code. Slack will disable your event URL if it fails too many times.
+</Callout>
+
+<Callout type="error" title="Getting 'missing_scope' errors?">
+  You need to add the required scopes under OAuth & Permissions and then **reinstall the app** to your workspace. Slack does not pick up new scopes automatically - you must reinstall after changing them.
 </Callout>
