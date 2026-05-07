@@ -2,13 +2,15 @@
 title: Android 
 description: A Cute Guide For Shipping Android Apps :)
 ---
+import { Callout } from 'fumadocs-ui/components/callout';
+import { GithubInfo } from 'fumadocs-ui/components/github-info';
 import { Step, Steps } from 'fumadocs-ui/components/steps';
 
-Overview [#overview]
+# Overview 
 
 Android apps are the application which i can be installed in most of the modern andriod smartphones through any source ,For this guide, the most important part is that Shipwrights can easily download, install, and test your app using the provided APK file without complicated setup steps.For this guide, the most important part is that Shipwrights can easily download, install, and test your app using the provided APK file without complicated setup steps.
 
-Requirements [#requirements]
+# Requirements 
 
 * Provide an apk downloadable release on Github releases
 * The app must launch on Android Smartphone with out any prior setup 
@@ -16,27 +18,27 @@ Requirements [#requirements]
 * If the app uses authentication, users must be able to create accounts and log in
 
 
-Publishing Options [#publishing-options]
+# Publishing Options 
 
 You need to publish it on a GitHub Release for `.apk`
 
-How to Get APK [#how-to-get-apk] 
+## How to Get APK 
 
 <Steps>
   <Step>
-  Open Your Project(#open-your-project)
+ # Open Your Project
   Open your Android project in Android Studio.
   </Step>
 
   <Step>
-   Go to Build Option (#open-build-option)
+ # Go to Build Option
    Top menu: Build → Generate Signed Bundle / APK → Click APk
 
     <img src="/android-assets/build.gif" alt="create-build" loading="eager" />
    </Step>
 
     <Step>
-   Create or Choose Keystore(#create-keystroke)
+ # Create or Choose Keystore
    If first time: Click Create new → Save .jks file → Add password → Add alias
    <img src="/android-assets/pass.gif" alt="create-pass" loading="eager" />
     <Callout type="warn" title="Keep this file safe.">
@@ -47,7 +49,7 @@ How to Get APK [#how-to-get-apk]
   
 
    <Step>
-    Choose Release Build (#finish-your-project)
+  # Choose Release Build 
     Select: release → Then click Finish.
     <img src="/android-assets/last.gif" alt="create-last" loading="eager" />
  </Step>
@@ -58,7 +60,7 @@ How to Get APK [#how-to-get-apk]
  Reviewers need a runnable app, not just a repository link. Publish a release artifact or installer on Github releases that can be downloaded and launched directly
 </Callout>
 
-#Readme Requirements For Adriod Apps(#readme-of-android-apps)
+# Readme Requirements For Adriod Apps
 
 * Make sure to mention all the features of your app so that we dont miss any of your hardwork during testing !
 * Mention the usage of any open source asset in your project and give proper credits :)
