@@ -1,7 +1,11 @@
 ---
 title: 3D
-description: 3D
+description: 3D Model Guide For Shipping !
 ---
+import { Callout } from 'fumadocs-ui/components/callout';
+import { GithubInfo } from 'fumadocs-ui/components/github-info';
+import { Step, Steps } from 'fumadocs-ui/components/steps';
+
 <Callout type="warn" title="Do not submit if you dont have a 3D Printer !!">
  if your are making 3d models or CAD models and reading this guide for submiting 3d Models , Make sure that you have a 3d printed version of your model and fully assembled and have a picture of it !!
 </Callout>
@@ -18,7 +22,8 @@ description: 3D
 * Make sure that you have logged hours on hackatime supported editor or with [Lapse](https://lapse.hackclub.com/) on any of your fav editors
 
 # Where i can make CAD models ?
-you can make any type of CAD And 3D models in one these editor mentioned below !! , *note : dont use tinkercad* :
+you can make any type of CAD And 3D models in one these editor mentioned below !! , *note : dont use tinkercad* 
+:--
 * Fusion 360
 * Onshape
 * FreeCAD
@@ -35,6 +40,158 @@ You need to publish editor files ,along with printing files on both gihub and on
 and the picture of the printed model should be uploaded in both github and any platform you choose !!
 
 ## How to Get Editor Files ? 
+You can follow these steps to export editors files from most of the common editors like fusion , onshape , blender , shaper3D . Most of the editors have similar exporting methods if you find any sort of difficulty to get the files dm [@Amu](https://hackclub.enterprise.slack.com/team/U091M21518T) for Help :)
 
+### Fusion 360
+
+<Steps>
+  <Step>
+ # Open Your Project
+  Open your Model in Fusion
+  </Step>
+
+  <Step>
+ # Go to Files Option 
+   Top left menu: files → click export
+
+    <img src="/3d-assests/file.jpg" alt="create-build" loading="eager" />
+   </Step>
+
+    <Step>
+ # Choose File Type 
+  From drop down box: Click list → specify the file type → select export location → Click Export 
+   <img src="/3d-assests/export.jpg" alt="create-pass" loading="eager" />
+    <Callout type="info" title="You need Two Types of File">
+  you would need to repeat same step to get both files :one the f3d fusion editor file and second the printing file eg: step , stl , 3mf etc :)
+</Callout>
+
+   </Step>
+</Steps>
+
+### Onshape
+
+<Steps>
+  <Step>
+ # Open Your Project
+  Open your Model in Onshape
+  </Step>
+
+  <Step>
+ # Go to File Name 
+   Bottom File name : PartStudio(default can be diff for you maybe) → Right click → Click export
+
+    <img src="3d-assests/onshape1.png" alt="create-build" loading="eager" />
+   </Step>
+
+    <Step>
+ # Choose File Type 
+  From drop down box: Click list → specify the file type → select export location → Click Export 
+   <img src="3d-assests/list.png" alt="create-pass" loading="eager" />
+    <Callout type="info" title="You need Only One Type of File !!!">
+if you are using OnShape you only need a printing file for eg: step , stl , 3mf etc , and the copy the url and make sure to add that in github readme :)
+</Callout>
+
+   </Step>
+</Steps>
+
+### Blender
+
+<Steps>
+  <Step>
+ # Open Your Project
+  Open your Model in Blender
+  </Step>
+
+  <Step>
+ # Getting A .Blend File 
+   save your project by going to File → Save (or Ctrl+S) and choose a location on your computer. Blender automatically adds the .blend extension to your project
+
+    <Step>
+ # Getting a Printable File
+  From Top Right: Click File → Export → select stl 
+   <img src="/3d-assests/stl.png" alt="create-pass" loading="eager" />
+    <Callout type="info" title="Stl file i reccomended for blender">
+stl file is one of the best file type for print and in blender exporting stl is really easy ,ensuring your mesh is manifold (watertight), has correct normals, and is triangulated
+</Callout>
+
+   </Step>
+</Steps>
+
+# Readme Requirements For 3D models
+
+* Make sure to have onshape link if you are using onshape as a editor
+* Mention the usage of any open source asset in your project and give proper credits :)
+* Try to have a brief description of model
+* Remeber the the **rule of three W , Why , What ,Where** so that you mention why you made this , what  is this actually ?, From where you learnt things or where are you going to use this :)
+
+# Uploading to Printables
+you can use any of the similar platfrom but it are recommended since it is really easy to upload models and helpfull for someone to print them easily :)
+i am using this ( https://www.printables.com/model/1553140-charmander-figurine ) post as an example , created By [@Amu](https://hackclub.enterprise.slack.com/team/U091M21518T)
+
+<Steps>
+  <Step>
+ # Create An Account 
+  Open https://www.printables.com/ and signup to create an account 
+  </Step>
+
+  <Step>
+ # Adding The Model
+   Top right you can see a CREATE option under your profile page , Click That !!
+
+    <img src="/3d-assests/file.png" alt="create-build" loading="eager" />
+   </Step>
+
+    <Step>
+ # Choose Model
+  From drop down list ,Click on Model Option to open the upload page
+    <img src="/3d-assests/Model.png" alt="create-pass" loading="eager" />
+
+   </Step>
+
+  <Step>
+ # Upload Files
+  Upload your file by clicking plus option or Drag and Drop Your Files 
+    <img src="/3d-assests/upload.gif" alt="create-pass" loading="eager" />
+   
+   </Step>
+
+<Step>
+ # Add Basic Information 
+  Add Basic information like name , and summary of your model and select a category , in the given exammple you can see i have selected the suited ones :)
+    <img src="/3d-assests/basic.png" alt="create-pass" loading="eager" />
+   
+   </Step>
+
+<Step>
+ # Some Extra Stuff 
+  Add some extra additional stuff like tags you can add as much you want but remember to keep it related this helps you model to get more views and downloads , also click orginal made option so that it could comfirm the you have made it :)
+    <img src="3d-assests/t.png" alt="create-pass" loading="eager" />
+   
+   </Step>
+
+<Step>
+ # Adding Screenshots And Printed Pictures 
+  Make Sure to Add Screenshots of all of your model and printed version of it , in my case i have some some cool renders which you can do too , but remember to upload printed picture of everything assembled !!
+    <img src="3d-assests/screenshots.png" alt="create-pass" loading="eager" />
+   
+   </Step>
+
+<Step>
+ # Final Step !!  
+  After All these here come to the final step where you select lience for you 3d model , basically making it opensoure for anyone so you have to select "Public Domain" option , it is great to contribute for everyone :)
+    <img src="3d-assests/os.png" alt="create-pass" loading="eager" />
+   
+   </Step>
+
+<Step>
+ # Publish :)
+ Yay we are on the final step , since you have done a lot of work make sure every thing is correct and Now Click the Orange Publish Button !!
+    <img src="3d-assests/publish.png" alt="create-pass" loading="eager" />
+   </Step>
+</Steps>
+
+<Callout type="info" title="Make Sure to Have Printables Link As Demo">
+Ok so you have done everything and ready to ship , now just make sure you have every file in you github and check once that you have everything correct in printables , now while shipping you can use printables link as demo :)
+</Callout>
 
 
