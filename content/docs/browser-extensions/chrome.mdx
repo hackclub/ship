@@ -1,7 +1,189 @@
 ---
 title: Chrome Web Store
 description: Publish extentions on Chrome (paid)
+icon: Globe
 ---
 
-<Callout type="warn" title="This is a WIP docs">
+import { Callout } from 'fumadocs-ui/components/callout';
+import { Step, Steps } from 'fumadocs-ui/components/steps';
+
+Chrome Extensions can be made available to the public by publishing them in the Chrome Web Store.
+For Shipwrights, the most important part is that your project must be packaged correctly, uploaded as a ZIP file, and submitted through the Chrome Web Store Developer Dashboard so it can be reviewed and installed like a real extension.
+
+<Callout type="info" title="Building for Firefox or publishing via Github Releases instead?">
+  If your extension is meant for Firefox Add-ons, please use the [Firefox guide](/docs/browser-extensions/firefox) instead. Firefox uses `.xpi` packages and has a different publishing flow.
+  If you're publishing your extension through a Github Release, please use the [Other extensions guide](/docs/browser-extensions/other) instead.
 </Callout>
+
+## Requirements
+
+- **Register a Chrome Web Store Developer Account** 
+- **Pay the registration fee:** Chrome Web Store publishing requires a one-time developer registration fee. This is part of the account setup process.
+- **Packaged extension ZIP:** Your final submission must be a `.zip` file that contains all extension files.
+- **Manifest in the root:** `manifest.json` must be placed at the root of the ZIP, not inside another folder.
+- **Clear store listing:** Your listing should include a proper title, description, screenshots, support information, and privacy details. 
+
+## Before you publish
+Before uploading, double-check to ensure every part of your extension works as intended.
+
+<Steps>
+<Step>
+**Check that the extension runs locally**
+
+Enable Developer mode and use Load unpacked to test the folder before zipping it.
+</Step>
+
+<Step>
+**Verify your manifest**
+
+Make sure manifest.json is valid JSON and contains the required fields for your extension.
+A few important things to check:
+- manifest.json is in the root folder
+- there are no JSON comments
+- the version number is correct
+- icons, permissions, and background/content scripts are declared properly
+</Step>
+</Steps>
+**Zip the finished extension and you're good to go!**
+
+## Registration and Payment:
+This is an essential part of setting up your account and paying the fees required to publish your extension in the google extension store!
+<Steps>
+<Step>
+**Create a Google Developer Account.**
+
+Use a correct google account since the developer account is connected to your google account.
+</Step>
+
+<Step>
+**Open the Chrome Web Store Developer Dashboard**
+</Step>
+
+<Step>
+**Accept the developer agreement**
+
+Chrome will ask you to agree to the Chrome Web Store Developer Agreement and related policies before you can publish.
+</Step>
+
+<Step>
+**Pay the one-time registration fee**
+
+Complete the registration payment step in the dashboard. After payment, the developer account becomes eligible to publish items.
+</Step>
+
+<Step>
+**Fill out your developer profile**
+
+Set up the account information, support email, and any other required profile details in the dashboard so your extension listing has proper contact info.
+</Step>
+</Steps>
+
+
+
+## Uploading your extension
+<Steps>
+<Step>
+**Open Chrome Developer Dashboard**
+</Step>
+
+<Step>
+**Click “Add new item”**
+
+This creates a new Chrome Web Store listing for your extension.
+</Step>
+
+<Step>
+**Upload your ZIP file**
+
+Choose the final `.zip` file that contains your extension.
+</Step>
+
+<Step>
+**Wait for the item to be created**
+
+If the manifest and ZIP are valid, Chrome will create the item and take you to the item editor page.
+</Step>
+</Steps>
+
+
+## Store listing
+<Steps>
+<Step>
+**Write a clear title and description**
+
+The title should match the extension’s purpose, and the description should explain exactly what it does.
+</Step>
+
+<Step>
+**Add screenshots and icons**
+
+Use clean images that show what the extension does. Avoid blank or placeholder screenshots.
+</Step>
+
+<Step>
+**Fill in privacy and permissions details**
+</Step>
+
+<Step>
+**Add usage instructions if needed**
+</Step>
+</Steps>
+
+
+## Submitting the extension for review
+<Steps>
+<Step>
+**Double-check everything**
+
+Before submission, confirm that:
+- the extension works
+- the ZIP is correct
+- the store listing is filled out
+- the privacy information is accurate
+- the version number is higher than any previous upload
+</Step>
+
+<Step>
+**Click “Submit for Review”**
+
+Once everything is ready, submit the item from the dashboard.
+</Step>
+
+<Step>
+**Wait for Chrome’s review process**
+
+The extension will be reviewed before it is published. The review time can vary depending on the item.
+</Step>
+
+<Step>
+**Publish when approved**
+
+If you choose immediate publishing, the extension goes live after review. If you defer publishing, you can publish it manually later.
+</Step>
+</Steps>
+
+**Your extension now will be live on the google extension store for anybody to try out.**
+
+## Updating your extension
+<Steps>
+<Step>
+**Increase the version number**
+
+Every uploaded version must have a higher version number than the previous one.
+</Step>
+
+<Step>
+**Rebuild the ZIP**
+
+Package the full extension again, including all changed and unchanged files.
+</Step>
+
+<Step>
+**Upload the new ZIP**
+
+Use the dashboard to upload the new version and submit it for review if required.
+</Step>
+</Steps>
+
+## Your Demo link
+Make your demo link redirect users to your google extensions live page.

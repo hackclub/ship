@@ -1,7 +1,187 @@
 ---
 title: FireFox Add-Ons
 description: Publish extentions on Firefox (free)
+icon: Globe
 ---
 
-<Callout type="warn" title="This is a WIP docs">
+import { Callout } from 'fumadocs-ui/components/callout';
+import { Step, Steps } from 'fumadocs-ui/components/steps';
+
+Firefox extensions are distributed through Firefox Add-ons (AMO - addons.mozilla.org).
+Unlike Chrome, Firefox uses `.xpi` files (which are essentially signed ZIP archives). 
+The most important part for Shipwrights is that your extension must be properly packaged, uploaded, and **signed by Mozilla** before it can be installed normally.
+
+<Callout type="info" title="Building for Chrome instead publishing via Github Releases instead?">
+  If your extension is meant for Chrome, please use the [Chrome guide](/docs/browser-extensions/chrome). 
+  If you're publishing your extension through a Github Release, please use the [Other extensions guide](/docs/browser-extensions/other) instead.
+</Callout>
+
+
+## Requirements
+
+- **Firefox Add-ons (AMO) account:** Required to upload and manage extensions
+- **Packaged extension:** You upload a `.zip`, Mozilla signs it into an `.xpi`
+- **Valid `manifest.json`:** Must follow Firefox-compatible WebExtension format
+- **Signed extension:** Unsigned extensions cannot be installed by normal users
+- **Clear listing details:** Description, screenshots, permissions, and privacy info
+
+
+## Before you publish
+Before uploading, double-check to ensure every part of your extension works as intended.
+
+<Steps>
+<Step>
+**Check that the extension runs locally**
+
+Go to: **"about:debugging#/runtime/this-firefox"**
+
+Click "Load Temporary Add-on" and select your manifest.json.
+</Step>
+
+<Step>
+**Verify your manifest**
+
+Make sure manifest.json is valid JSON and contains the required fields for your extension.
+A few important things to check:
+- manifest.json is in the root folder
+- there are no JSON comments
+- the version number is correct
+- icons, permissions, and background/content scripts are declared properly
+</Step>
+</Steps>
+
+
+## Creating an AMO account
+<Steps>
+<Step>
+**Create a Firefox account**
+
+Go to Firefox Add-ons (AMO) and sign in or create an account.
+</Step>
+
+<Step>
+**Open the Developer Hub**
+
+Navigate to the Developer Hub (usually “Submit a New Add-on”).
+</Step>
+
+<Step>
+**Agree to policies**
+
+Accept Mozilla’s Add-on policies and guidelines before continuing.
+</Step>
+</Steps>
+<Callout type="info" title="Free publishing"> Unlike Chrome, Firefox extension publishing is completely free. </Callout>
+
+
+## Uploading your extension
+<Steps>
+<Step>
+**Click “Submit a New Add-on”**
+</Step>
+
+<Step>
+**Upload your ZIP file**
+
+Mozilla will process and validate it.
+</Step>
+
+<Step>
+**Choose distribution type**
+
+Choose:
+- **Listed** (public store)
+- **Unlisted** (private `.xpi` download)
+</Step>
+</Steps>
+
+
+## Signing and .xpi Files
+
+Once uploaded, Mozilla signs your extension.
+
+Your uploaded .zip becomes a signed .xpi
+The .xpi is what users actually install
+You can download the signed file from the dashboard
+<Callout type="info" title="What is an .xpi?"> A `.xpi` file is just a signed version of your extension package. You do NOT manually create it — Mozilla generates it after upload. </Callout>
+
+## Filling out store listing
+<Steps>
+<Step>
+**Add basic details**
+
+Provide extension name, summary, and description.
+</Step>
+
+<Step>
+**Upload screenshots and icons**
+
+Show what your extension does.
+</Step>
+
+<Step>
+**Fill privacy information**
+
+Explain permissions and data usage clearly.
+</Step>
+
+<Step>
+**Mention instructions and usage**
+</Step>
+</Steps>
+
+## Submitting for review:
+<Steps>
+<Step>
+**Double-check everything**
+
+Ensure:
+- extension works
+- ZIP is correct
+- listing is complete
+</Step>
+
+<Step>
+**Submit for review**
+</Step>
+
+<Step>
+**Wait for approval**
+</Step>
+
+<Step>
+**Publish!!**
+
+- Listed → goes live.
+- Unlisted → downloadable `.xpi` is provided.
+</Step>
+</Steps>
+
+## Updating an extension on firefox
+<Steps>
+<Step>
+**Modify your extension**
+</Step>
+
+<Step>
+**Increase version number**
+
+Update `version` in `manifest.json`.
+</Step>
+
+<Step>
+**Re-upload ZIP**
+</Step>
+
+<Step>
+**Wait for re-signing**
+</Step>
+</Steps>
+
+## Your Demo link
+Make your demo link redirect users to your extension's addons page.
+
+<Callout type="warn" title="Firefox doesn't accept your addon?">
+  If for some reason your addon was rejected by firefox and don't accept to add your extension,
+  Publish your .xpi file as a github release instead.
 </Callout>

@@ -1,350 +1,263 @@
 ---
-title: Visual Studio Code
-description: Publishing extensions for Visual Studio Code
+title: VS Code Extensions
+description: Publish extensions on VS Code
+icon: Code
 ---
 
 import { Callout } from 'fumadocs-ui/components/callout';
 import { Step, Steps } from 'fumadocs-ui/components/steps';
 
-VS Code extensions are plugins that add features, themes, language support, debuggers, and more to Visual Studio Code. They can do anything from adding a new color theme to integrating an entire external service. For this guide, the most important part is that Shipwrights can install and use your extension without building it from source.
+VS Code Extensions can be made available to the public by publishing them through the VS Code Marketplace, the Open VSX Registry, or distributing them manually via GitHub Releases.
+For Shipwrights, the most important part is that your extension is packaged correctly as a `.vsix` file and submitted through the right channel so it can be reviewed and installed like a real extension.
+
+<Callout type="info" title="Not sure which publishing method to use?">
+  - **VS Code Marketplace** is the official Microsoft store, requires a one-time publisher setup, and reaches the widest VS Code audience.
+  - **Open VSX Registry** is a free, open alternative used by VS Codium and other editors — no fees required.
+  - **GitHub Releases** is best for direct distribution or when you want full control over versioning without going through a store.
+</Callout>
 
 ## Requirements
 
-- **Provide a downloadable `.vsix` file on GitHub Releases.** This is the packaged format for VS Code extensions.
-- The extension must install and activate in VS Code without errors.
-- Include a clear `README.md` explaining what the extension does, how to install the `.vsix`, and how to use it.
-- If the extension requires any external configuration (API keys, external services, etc.), document the setup steps clearly.
+- **`package.json` at the root:** Your extension manifest must be at the root of your project and contain the required VS Code extension fields.
+- **Packaged `.vsix` file:** Your final submission must be a `.vsix` file built using `vsce` or `ovsx`.
+- **Publisher name:** You must have a publisher identity set up before publishing to either marketplace.
+- **Clear listing details:** Your listing should include a proper name, description, icon, and category.
 
-<Callout type="warn" title="Do not submit source-only projects">
-  Reviewers will not clone your repo, install dependencies, and compile your extension themselves. You must provide a `.vsix` file on GitHub Releases that can be downloaded and installed directly.
-</Callout>
-
-<Callout type="info" title="Your demo link">
-  Your demo link for Ship should be your **GitHub Releases page** where the `.vsix` can be downloaded. If you also publish to the VS Code Marketplace, you can use that link instead.
-</Callout>
-
----
-
-## Prerequisites
-
-Make sure you have these installed before starting:
-
-- **[Node.js](https://nodejs.org/)** (LTS version recommended - includes `npm`).
-- **[Visual Studio Code](https://code.visualstudio.com/)**.
-- **Yeoman and the VS Code Extension Generator** - scaffolds a new extension project for you:
-
-```bash
-npm install -g yo generator-code
-```
-
----
-
-## Creating an Extension
+## Before you publish
+Before packaging, double-check that every part of your extension works as intended.
 
 <Steps>
 <Step>
+**Test the extension locally**
 
-### Scaffold the project
-
-Run the Yeoman generator to create the extension boilerplate:
-
-```bash
-yo code
-```
-
-Answer the prompts:
-- **What type of extension?** → `New Extension (TypeScript)` (or JavaScript if you prefer)
-- **Name** → your extension name (e.g. `my-awesome-extension`)
-- **Description** → a short description
-- **Initialize a git repository?** → Yes
-- **Bundle with webpack?** → Yes (recommended for smaller package size)
-- **Package manager?** → npm
-
-Then open the project:
-
-```bash
-cd my-awesome-extension
-code .
-```
-
+Press `F5` in VS Code to launch an Extension Development Host and verify your extension behaves correctly.
 </Step>
+
 <Step>
+**Verify your `package.json`**
 
-### Understand the project structure
-
-After scaffolding, your project will look like this:
-
-```
-my-awesome-extension/
-├── .vscode/             # Debug & task configs (F5 works out of the box)
-│   ├── launch.json
-│   └── tasks.json
-├── src/
-│   └── extension.ts     # Your main extension logic
-├── package.json         # Extension manifest - metadata, activation, commands, settings
-├── tsconfig.json        # TypeScript config
-├── webpack.config.js    # Bundling config
-└── .vscodeignore        # Files to exclude from the packaged .vsix
-```
-
-The two most important files are:
-- **`package.json`** - the extension manifest. It declares *when* your extension activates, what commands it contributes, what settings users can configure, and all the metadata about your extension.
-- **`src/extension.ts`** - contains the `activate()` function where your logic runs.
-
+Make sure `package.json` is valid and contains all required fields for a VS Code extension.
+A few important things to check:
+- `name`, `displayName`, `version`, and `publisher` are set
+- `engines.vscode` specifies the minimum supported VS Code version
+- `activationEvents`, `contributes`, and any commands are declared correctly
+- The `icon` field points to a valid image file if you have one
 </Step>
+
 <Step>
-
-### Configure `package.json`
-
-The generator creates a default `package.json` with a simple "Hello World" command. Here is a breakdown of the key fields:
-
-```json title="package.json"
-{
-  "name": "my-awesome-extension",
-  "displayName": "My Awesome Extension",
-  "description": "Does something awesome in VS Code",
-  "version": "1.0.0",
-  "publisher": "your-publisher-name",
-  "engines": {
-    "vscode": "^1.89.0"
-  },
-  "activationEvents": [],
-  "main": "./dist/extension",
-  "contributes": {
-    "commands": [
-      {
-        "command": "my-awesome-extension.helloWorld",
-        "title": "My Extension: Hello World"
-      }
-    ]
-  }
-}
-```
-
-Key fields explained:
-- **`publisher`** - your Marketplace publisher ID. You'll need this to package the extension.
-- **`engines.vscode`** - the minimum VS Code version your extension supports.
-- **`activationEvents`** - when your extension should be loaded. Common options:
-  - `"onCommand:my-awesome-extension.helloWorld"` - activates when the command is triggered.
-  - `"onStartupFinished"` - activates after VS Code finishes starting.
-  - `"onLanguage:python"` - activates when a Python file is opened.
-- **`contributes.commands`** - registers commands that users can run from the Command Palette.
-- **`contributes.configuration`** - defines user-configurable settings.
-
-</Step>
-<Step>
-
-### Write your extension logic
-
-Open `src/extension.ts`. The generated code registers a simple "Hello World" command. Here is an example with a bit more functionality:
-
-```typescript title="src/extension.ts"
-import * as vscode from 'vscode';
-
-export function activate(context: vscode.ExtensionContext) {
-    console.log('My extension is now active!');
-
-    let disposable = vscode.commands.registerCommand(
-        'my-awesome-extension.helloWorld',
-        () => {
-            vscode.window.showInformationMessage(
-                'Hello from My Awesome Extension!'
-            );
-        }
-    );
-    context.subscriptions.push(disposable);
-
-    const statusBar = vscode.window.createStatusBarItem(
-        vscode.StatusBarAlignment.Left, 1
-    );
-    statusBar.text = '$(star) My Extension';
-    statusBar.tooltip = 'Click to run Hello World';
-    statusBar.command = 'my-awesome-extension.helloWorld';
-    statusBar.show();
-    context.subscriptions.push(statusBar);
-}
-
-export function deactivate() {}
-```
-
-Some useful VS Code APIs you can use in your extension:
-
-| API | What it does |
-|---|---|
-| `vscode.window.showInformationMessage()` | Show a notification popup |
-| `vscode.window.createStatusBarItem()` | Add an item to the status bar |
-| `vscode.workspace.onDidChangeTextDocument()` | Detect when the user types in a file |
-| `vscode.workspace.onDidSaveTextDocument()` | Detect when a file is saved |
-| `vscode.window.onDidChangeActiveTextEditor()` | Detect when the user switches tabs |
-| `vscode.workspace.getConfiguration()` | Read user settings |
-| `vscode.commands.registerCommand()` | Register a command for the Command Palette |
-| `vscode.env.openExternal()` | Open a URL in the user's browser |
-
-Check out the full [VS Code Extension API documentation](https://code.visualstudio.com/api) for everything you can do.
-
-</Step>
-<Step>
-
-### Test your extension
-
-Press **F5** (or go to **Run → Start Debugging**). This opens a new **Extension Development Host** window with your extension loaded.
-
-1. Open the Command Palette with `Ctrl+Shift+P` (or `Cmd+Shift+P` on macOS).
-2. Type the name of your command (e.g., "My Extension: Hello World").
-3. You should see your notification appear!
-
-Check the **Debug Console** in your original VS Code window for any `console.log` output or errors.
-
-</Step>
-</Steps>
-
----
-
-## Packaging & Publishing
-
-<Steps>
-<Step>
-
-### Install `vsce`
-
-`vsce` (Visual Studio Code Extensions) is the official CLI tool for packaging and publishing VS Code extensions.
+**Install the packaging tool**
 
 ```bash
 npm install -g @vscode/vsce
 ```
-
 </Step>
+
 <Step>
+**Package the extension**
 
-### Create a Publisher
-
-You need a publisher ID to package your extension. This is free.
-
-1. Go to the [Visual Studio Marketplace Publisher Management](https://marketplace.visualstudio.com/manage) page.
-2. Sign in with a Microsoft account and click **Create publisher**.
-3. Choose a unique publisher ID and display name.
-4. Add your publisher ID to the `"publisher"` field in your `package.json`.
-
-</Step>
-<Step>
-
-### Prepare for packaging
-
-Make sure your project has these files:
-
-- **`CHANGELOG.md`** - document what changed in each version.
-- **`LICENSE`** - include a license file.
-- **`.vscodeignore`** - exclude unnecessary files from the package to keep it small:
-
-```text title=".vscodeignore"
-.vscode/**
-src/**
-node_modules/**
-.gitignore
-tsconfig.json
-webpack.config.js
-```
-
-</Step>
-<Step>
-
-### Package into a `.vsix`
-
-Run the following from the root of your project:
+Run the following command from your project root to produce a `.vsix` file:
 
 ```bash
 vsce package
 ```
-
-This compiles, bundles, and produces a file like `my-awesome-extension-1.0.0.vsix`.
-
-<Callout type="info" title="Test your .vsix before releasing">
-  Install the `.vsix` locally to make sure it works outside of debug mode:
-  
-  ```bash
-  code --install-extension my-awesome-extension-1.0.0.vsix
-  ```
-  
-  Restart VS Code and verify everything works.
-</Callout>
-
 </Step>
+</Steps>
+
+**You now have a `.vsix` file ready to publish!**
+
+---
+
+## Option 1 — VS Code Marketplace
+
+The official Microsoft marketplace. Requires a free Azure DevOps account and publisher setup.
+
+### Account Setup
+
+<Steps>
 <Step>
+**Create a Microsoft account**
 
-### Upload to GitHub Releases
-
-This is how Shipwrights will download your extension.
-
-1. Push your code to GitHub.
-2. Go to your repository → **Releases** → **Create a new release**.
-3. Create a tag (e.g., `v1.0.0`).
-4. Write release notes explaining what the extension does and how to install it.
-5. **Drag and drop your `.vsix` file** into the "Attach binaries" area.
-6. Click **Publish release**.
-
-Include installation instructions in your release notes:
-```
-## Installation
-1. Download the .vsix file below
-2. Open VS Code
-3. Press Ctrl+Shift+P → "Extensions: Install from VSIX..."
-4. Select the downloaded file
-5. Reload VS Code
-```
-
+You'll need a Microsoft account to sign in to Azure DevOps and the VS Code Marketplace publisher dashboard.
 </Step>
+
 <Step>
+**Create an Azure DevOps organization**
 
-### (Optional) Publish to the VS Code Marketplace
+Go to [dev.azure.com](https://dev.azure.com) and create a new organization. This is needed to generate a Personal Access Token (PAT).
+</Step>
 
-If you want users to be able to install your extension directly from the Extensions panel in VS Code:
+<Step>
+**Generate a Personal Access Token (PAT)**
 
-1. Get a **Personal Access Token (PAT)** from [Azure DevOps](https://dev.azure.com/) with the **Marketplace (manage)** scope.
-2. Log in:
-   ```bash
-   vsce login your-publisher-name
-   ```
-3. Publish:
-   ```bash
-   vsce publish
-   ```
+In your Azure DevOps organization, go to **User Settings → Personal Access Tokens** and create a token with the **Marketplace (Manage)** scope. Copy and save this token — you'll need it to publish.
+</Step>
 
-Your extension will appear at `https://marketplace.visualstudio.com/items?itemName=your-publisher-name.my-awesome-extension`.
+<Step>
+**Create a publisher**
 
+Go to the [VS Code Marketplace publisher management page](https://marketplace.visualstudio.com/manage) and create a new publisher. The publisher name must match the `publisher` field in your `package.json`.
+</Step>
+</Steps>
+
+### Publishing
+
+<Steps>
+<Step>
+**Log in with your PAT**
+
+```bash
+vsce login <your-publisher-name>
+```
+
+Enter your Personal Access Token when prompted.
+</Step>
+
+<Step>
+**Publish the extension**
+
+```bash
+vsce publish
+```
+
+This packages and uploads your extension to the Marketplace in one step. Alternatively, upload the `.vsix` file manually through the publisher dashboard.
+</Step>
+
+<Step>
+**Wait for the review process**
+
+Microsoft reviews new extensions before they go live. Review time can vary.
+</Step>
+
+<Step>
+**Confirm the listing is live**
+
+Once approved, your extension will appear in the VS Code Marketplace and be installable directly from the VS Code Extensions panel.
 </Step>
 </Steps>
 
 ---
 
-## Updating Your Extension
+## Option 2 — Open VSX Registry
 
-When you make changes, bump the version in `package.json`, re-package, and upload the new `.vsix` to a new GitHub Release:
+A free, open-source alternative to the VS Code Marketplace, compatible with VS Codium and other editors based on VS Code.
+
+### Account Setup
+
+<Steps>
+<Step>
+**Create an Eclipse Foundation account**
+
+Register at [open-vsx.org](https://open-vsx.org) using your GitHub account or by creating an Eclipse Foundation account.
+</Step>
+
+<Step>
+**Create a namespace**
+
+Your namespace is equivalent to a publisher name. Create one that matches the `publisher` field in your `package.json`.
+</Step>
+
+<Step>
+**Generate an access token**
+
+In your Open VSX account settings, generate an access token. Save it — you'll need it to publish.
+</Step>
+
+<Step>
+**Install the Open VSX publishing tool**
 
 ```bash
-# Bump version (1.0.0 → 1.0.1)
-npm version patch
-
-# Re-package
-vsce package
-
-# If published to Marketplace:
-vsce publish
+npm install -g ovsx
 ```
+</Step>
+</Steps>
+
+### Publishing
+
+<Steps>
+<Step>
+**Publish the extension**
+
+```bash
+ovsx publish <your-extension.vsix> -p <your-access-token>
+```
+</Step>
+
+<Step>
+**Confirm the listing is live**
+
+Open VSX does not have a manual review step — your extension should be available on [open-vsx.org](https://open-vsx.org) shortly after upload.
+</Step>
+</Steps>
 
 ---
 
-## Troubleshooting
+## Option 3 — GitHub Releases
 
-<Callout type="warn" title="Extension not activating?">
-  Check that your `activationEvents` in `package.json` matches how your extension is supposed to be triggered. If you want it to always activate, use `"onStartupFinished"`. Check the Output panel (**View → Output** → select your extension from the dropdown) for errors.
-</Callout>
+Best for direct distribution, private extensions, or publishing without going through a store.
 
-<Callout type="warn" title="vsce package fails?">
-  Common causes: missing `README.md`, missing `publisher` field, missing `repository` field, or your `engines.vscode` version doesn't match. Read the error message carefully - `vsce` usually tells you exactly what's wrong.
-</Callout>
+<Steps>
+<Step>
+**Package the extension**
 
-<Callout type="info" title="Useful resources">
-  - [VS Code Extension API documentation](https://code.visualstudio.com/api)
-  - [Extension samples on GitHub](https://github.com/microsoft/vscode-extension-samples)
-  - [Publishing Extensions guide](https://code.visualstudio.com/api/working-with-extensions/publishing-extension)
-</Callout>
+```bash
+vsce package
+```
+
+This produces a `.vsix` file in your project root.
+</Step>
+
+<Step>
+**Create a GitHub Release**
+
+Go to your repository on GitHub, click **Releases → Draft a new release**, and fill in the tag version and release notes.
+</Step>
+
+<Step>
+**Attach the `.vsix` file**
+
+Upload the `.vsix` file as a release asset before publishing the release.
+</Step>
+
+<Step>
+**Share the install instructions**
+
+Users can install the extension by downloading the `.vsix` file and running:
+
+```bash
+code --install-extension your-extension.vsix
+```
+
+Or by opening VS Code, going to **Extensions → ··· → Install from VSIX**, and selecting the downloaded file.
+</Step>
+</Steps>
+
+---
+
+## Updating your extension
+
+These steps apply regardless of which publishing method you use.
+
+<Steps>
+<Step>
+**Increase the version number**
+
+Every published version must have a higher version number than the previous one. Update the `version` field in `package.json`.
+</Step>
+
+<Step>
+**Repackage the extension**
+
+```bash
+vsce package
+```
+</Step>
+
+<Step>
+**Republish or upload the new release**
+
+Follow the same publishing steps for your chosen method — Marketplace, Open VSX, or a new GitHub Release.
+</Step>
+</Steps>
+
+## Your Demo link
+Make your demo link redirect users to your extension's live Marketplace page, Open VSX listing, or GitHub Releases page depending on your chosen publishing method.
