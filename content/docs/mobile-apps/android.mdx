@@ -1,14 +1,10 @@
 ---
 title: Android 
-description: Android Apps WIP!
+description: A Cute Guide For Shipping Android Apps :)
 ---
 import { Step, Steps } from 'fumadocs-ui/components/steps';
 
 Overview [#overview]
-
-<Callout type="warn" title="this is WIP">
- working on it :)
-</Callout> 
 
 Android apps are the application which i can be installed in most of the modern andriod smartphones through any source ,For this guide, the most important part is that Shipwrights can easily download, install, and test your app using the provided APK file without complicated setup steps.For this guide, the most important part is that Shipwrights can easily download, install, and test your app using the provided APK file without complicated setup steps.
 
@@ -33,33 +29,27 @@ How to Get APK [#how-to-get-apk]
   </Step>
 
   <Step>
-   Go to Build Option
+   Go to Build Option (#open-build-option)
    Top menu: Build → Generate Signed Bundle / APK → Click APk
 
-
+    <img src="/android-assets/build.gif" alt="create-build" loading="eager" />
    </Step>
 
     <Step>
-   Create or Choose Keystore
+   Create or Choose Keystore(#create-keystroke)
    If first time: Click Create new → Save .jks file → Add password → Add alias
-
+   <img src="/android-assets/pass.gif" alt="create-pass" loading="eager" />
     <Callout type="warn" title="Keep this file safe.">
-  Reviewers need a runnable app, not just a repository link. Publish a Github release that can be downloaded and launched directly; don't only mention how to build this app in the README.
-  Please provide either a .dmg file  or a .zip file of your .app file.
+  ths file is important in terms of publishing in google play store , if you have plans it to publish and directly update the app ,so that ppl can download the new version of your app easily !!, google play use it as a authentication key to check if author was the same during the update 
 </Callout>
 
    </Step>
   
-   
- 
-
-  
-
 
    <Step>
-    Choose Release Build
+    Choose Release Build (#finish-your-project)
     Select: release → Then click Finish.
-
+    <img src="/android-assets/last.gif" alt="create-last" loading="eager" />
  </Step>
 </Steps>
 
@@ -67,3 +57,12 @@ How to Get APK [#how-to-get-apk]
 <Callout type="warn" title="Do not submit source-only builds">
  Reviewers need a runnable app, not just a repository link. Publish a release artifact or installer on Github releases that can be downloaded and launched directly
 </Callout>
+
+#Readme Requirements For Adriod Apps(#readme-of-android-apps)
+
+* Make sure to mention all the features of your app so that we dont miss any of your hardwork during testing !
+* Mention the usage of any open source asset in your project and give proper credits :)
+* Try to have a brief description of the app with proper usage instructions
+* Remeber the the ** rule of three W , Why , What ,Where ** so that you mention why you made this , what  is this actually ?, From where you learnt things or where are you going to use this :)
+
+Above gif are edited version of this [og gif](https://miro.medium.com/v2/resize:fit:1400/1*F_QgTqatrlDKBjAfwp64wg.gif) :)
