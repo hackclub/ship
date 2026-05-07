@@ -1,0 +1,368 @@
+---
+title: Hackatime Extension
+description: Building a time-tracking editor extension for Hackatime
+---
+
+import { Callout } from 'fumadocs-ui/components/callout';
+import { Step, Steps } from 'fumadocs-ui/components/steps';
+
+[Hackatime](https://hackatime.hackclub.com/) is a free, open-source, WakaTime-compatible coding time tracker built by the Hack Club community. It tracks how long you spend coding, which languages you use, and what projects you work on - all displayed on a clean dashboard. In this guide you will learn how to build an editor extension that sends time-tracking data ("heartbeats") to the Hackatime API.
+
+We'll use a VS Code extension as our example, but the core concepts - listening for editor events and sending heartbeats - apply to any editor or IDE. If you're new to building VS Code extensions, read the [VS Code extension guide](/docs/extenstions/vscode) first for the full setup, packaging, and publishing walkthrough.
+
+## Requirements
+
+- Your extension must be **installable and testable by Shipwrights** without building from source. Provide the appropriate release artifact for your editor:
+  - **VS Code** - a `.vsix` file on GitHub Releases (see the [VS Code guide](/docs/extenstions/vscode#packaging--publishing)).
+  - **JetBrains** - a `.jar` or `.zip` plugin file on GitHub Releases.
+  - **Vim/Neovim** - a plugin repository with clear install instructions for popular plugin managers (e.g., `vim-plug`, `lazy.nvim`).
+  - **Other editors** - provide whatever installable format is standard for that editor's plugin ecosystem.
+- The extension must successfully send heartbeats to Hackatime when a user is coding.
+- Include a clear `README.md` explaining how to install, how to configure the API key, and how to verify it is working.
+
+<Callout type="warn" title="Do not submit source-only projects">
+  Reviewers will not clone your repo, install a toolchain, and compile your extension themselves. Provide a ready-to-install artifact on GitHub Releases or the editor's extension marketplace.
+</Callout>
+
+<Callout type="info" title="Your demo link">
+  Your demo link for Ship should be your **GitHub Releases page** where the artifact can be downloaded, or a marketplace link if you choose to publish there.
+</Callout>
+
+---
+
+## How Time Tracking Works
+
+A time-tracking extension has two jobs:
+
+1.  **Listen for editor events** - detect when a user opens a file, types, switches tabs, or saves.
+2.  **Send heartbeats** - when an event fires, send a small JSON payload to the Hackatime API with metadata about what the user is working on.
+
+The Hackatime server receives these heartbeats and aggregates them into durations. If heartbeats keep arriving within a timeout window (typically 2 minutes), Hackatime treats that entire period as active coding time. When heartbeats stop, the session ends.
+
+### What is a Heartbeat?
+
+A heartbeat is a small JSON object sent as a `POST` request to the Hackatime API. Here are the fields:
+
+| Field | Type | Description |
+|---|---|---|
+| `entity` | string | Absolute path to the file being edited |
+| `type` | string | Usually `"file"` |
+| `time` | float | Unix epoch timestamp in seconds |
+| `language` | string | Programming language of the file (e.g. `"typescript"`) |
+| `project` | string | Name of the workspace/project |
+| `is_write` | boolean | `true` if triggered by a file save, `false` otherwise |
+| `category` | string | Activity type - `"coding"`, `"debugging"`, `"browsing"`, etc. |
+
+**API endpoint:** `POST https://hackatime.hackclub.com/api/v1/users/current/heartbeats`
+
+**Authentication:** Basic auth with your API key base64-encoded: `Authorization: Basic <base64(api_key)>`
+
+<Callout type="info" title="Privacy">
+  Hackatime only receives metadata (file names, project names, timestamps, and language). It **never** sees or uploads your actual source code.
+</Callout>
+
+---
+
+## Building a Hackatime Extension (VS Code Example)
+
+This section walks through a complete VS Code implementation. If you haven't built a VS Code extension before, start with the [VS Code extension guide](/docs/extenstions/vscode) to learn about scaffolding, project structure, and packaging.
+
+### Prerequisites
+
+- [Node.js](https://nodejs.org/) (LTS) and npm.
+- [VS Code](https://code.visualstudio.com/).
+- Yeoman generator: `npm install -g yo generator-code`
+- A [Hackatime account](https://hackatime.hackclub.com/) and your API key.
+
+### Scaffold the Project
+
+```bash
+yo code
+```
+
+Choose **New Extension (TypeScript)**, name it something like `my-hackatime`, and open the project in VS Code. See the [VS Code guide](/docs/extenstions/vscode#creating-an-extension) for full details on the prompts.
+
+### Configure `package.json`
+
+Update the `activationEvents` and `contributes` sections so the extension activates on startup and exposes settings for the API key and URL:
+
+```json title="package.json (relevant sections)"
+{
+  "activationEvents": [
+    "onStartupFinished"
+  ],
+  "contributes": {
+    "commands": [
+      {
+        "command": "my-hackatime.setApiKey",
+        "title": "Hackatime: Set API Key"
+      },
+      {
+        "command": "my-hackatime.dashboard",
+        "title": "Hackatime: Open Dashboard"
+      }
+    ],
+    "configuration": {
+      "title": "Hackatime",
+      "properties": {
+        "my-hackatime.apiKey": {
+          "type": "string",
+          "default": "",
+          "description": "Your Hackatime API key. Get it from https://hackatime.hackclub.com"
+        },
+        "my-hackatime.apiUrl": {
+          "type": "string",
+          "default": "https://hackatime.hackclub.com/api/v1",
+          "description": "The Hackatime API base URL."
+        }
+      }
+    }
+  }
+}
+```
+
+<Callout type="info" title="Why onStartupFinished?">
+  Using `onStartupFinished` instead of `*` is a best practice. It means your extension loads *after* VS Code has finished starting up, so it doesn't slow down the editor's launch time.
+</Callout>
+
+### Write the Extension Logic
+
+Replace the contents of `src/extension.ts` with the following. This implements the full lifecycle: reading settings, listening for events, throttling heartbeats, and sending them to the Hackatime API.
+
+```typescript title="src/extension.ts"
+import * as vscode from 'vscode';
+import * as path from 'path';
+import * as os from 'os';
+import * as fs from 'fs';
+
+let lastHeartbeatAt = 0;
+let lastHeartbeatFile = '';
+const HEARTBEAT_COOLDOWN_MS = 120_000; // 2 minutes
+let statusBarItem: vscode.StatusBarItem;
+
+export function activate(context: vscode.ExtensionContext) {
+    console.log('Hackatime extension activated');
+
+    statusBarItem = vscode.window.createStatusBarItem(
+        vscode.StatusBarAlignment.Left, 1
+    );
+    statusBarItem.text = '$(clock) Hackatime';
+    statusBarItem.tooltip = 'Hackatime is tracking your time';
+    statusBarItem.show();
+    context.subscriptions.push(statusBarItem);
+
+    context.subscriptions.push(
+        vscode.commands.registerCommand('my-hackatime.setApiKey', promptForApiKey)
+    );
+    context.subscriptions.push(
+        vscode.commands.registerCommand('my-hackatime.dashboard', () => {
+            vscode.env.openExternal(
+                vscode.Uri.parse('https://hackatime.hackclub.com')
+            );
+        })
+    );
+
+    const apiKey = getApiKey();
+    if (!apiKey) {
+        vscode.window.showWarningMessage(
+            'Hackatime: No API key configured. Set one to start tracking!',
+            'Set API Key'
+        ).then(choice => {
+            if (choice === 'Set API Key') { promptForApiKey(); }
+        });
+    }
+
+    context.subscriptions.push(
+        vscode.workspace.onDidChangeTextDocument(event => {
+            if (event.document.uri.scheme === 'file') {
+                handleActivity(event.document, false);
+            }
+        })
+    );
+
+    context.subscriptions.push(
+        vscode.workspace.onDidSaveTextDocument(document => {
+            if (document.uri.scheme === 'file') {
+                handleActivity(document, true);
+            }
+        })
+    );
+
+    context.subscriptions.push(
+        vscode.window.onDidChangeActiveTextEditor(editor => {
+            if (editor && editor.document.uri.scheme === 'file') {
+                handleActivity(editor.document, false);
+            }
+        })
+    );
+}
+
+export function deactivate() {
+    if (statusBarItem) { statusBarItem.dispose(); }
+}
+
+function handleActivity(document: vscode.TextDocument, isWrite: boolean) {
+    const now = Date.now();
+    const filePath = document.uri.fsPath;
+
+    const cooldownElapsed = (now - lastHeartbeatAt) > HEARTBEAT_COOLDOWN_MS;
+    const fileChanged = filePath !== lastHeartbeatFile;
+
+    if (isWrite || cooldownElapsed || fileChanged) {
+        sendHeartbeat(document, isWrite);
+        lastHeartbeatAt = now;
+        lastHeartbeatFile = filePath;
+    }
+}
+
+function getApiKey(): string | undefined {
+    const config = vscode.workspace.getConfiguration('my-hackatime');
+    let key = config.get<string>('apiKey');
+
+    if (!key) {
+        try {
+            const cfgPath = path.join(os.homedir(), '.wakatime.cfg');
+            const cfgContent = fs.readFileSync(cfgPath, 'utf-8');
+            const match = cfgContent.match(/^api_key\s*=\s*(.+)$/m);
+            if (match) { key = match[1].trim(); }
+        } catch {
+            // File doesn't exist - that's okay
+        }
+    }
+
+    return key || undefined;
+}
+
+async function promptForApiKey() {
+    const key = await vscode.window.showInputBox({
+        prompt: 'Enter your Hackatime API Key',
+        placeHolder: 'waka_xxxxxxxxxxxxxxxxxxxx',
+        ignoreFocusOut: true,
+    });
+
+    if (key) {
+        const config = vscode.workspace.getConfiguration('my-hackatime');
+        await config.update('apiKey', key, vscode.ConfigurationTarget.Global);
+        vscode.window.showInformationMessage('Hackatime: API key saved!');
+    }
+}
+
+async function sendHeartbeat(
+    document: vscode.TextDocument,
+    isWrite: boolean
+) {
+    const apiKey = getApiKey();
+    if (!apiKey) { return; }
+
+    const config = vscode.workspace.getConfiguration('my-hackatime');
+    const apiUrl = config.get<string>('apiUrl')
+        || 'https://hackatime.hackclub.com/api/v1';
+    const endpoint = `${apiUrl}/users/current/heartbeats`;
+
+    const heartbeat = {
+        entity: document.uri.fsPath,
+        type: 'file',
+        time: Date.now() / 1000,
+        language: document.languageId,
+        is_write: isWrite,
+        project: vscode.workspace.name || 'Unknown Project',
+        category: 'coding',
+    };
+
+    try {
+        const response = await fetch(endpoint, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Basic ${Buffer.from(apiKey).toString('base64')}`,
+            },
+            body: JSON.stringify(heartbeat),
+        });
+
+        if (response.ok) {
+            statusBarItem.text = '$(clock) Hackatime ✓';
+            setTimeout(() => {
+                statusBarItem.text = '$(clock) Hackatime';
+            }, 5000);
+        } else {
+            console.error(
+                `Hackatime heartbeat failed: ${response.status} ${response.statusText}`
+            );
+            statusBarItem.text = '$(clock) Hackatime ✗';
+        }
+    } catch (error) {
+        console.error('Hackatime heartbeat error:', error);
+    }
+}
+```
+
+### Test It
+
+Press **F5** to launch the Extension Development Host. Open a project, type in some files, save, and switch tabs. You should see `Hackatime ✓` flash in the status bar after heartbeats are sent. Check your [Hackatime Dashboard](https://hackatime.hackclub.com) to verify time is being recorded.
+
+### Package & Release
+
+Follow the [Packaging & Publishing](/docs/extenstions/vscode#packaging--publishing) steps from the VS Code guide:
+
+1. Install `vsce`: `npm install -g @vscode/vsce`
+2. Package: `vsce package`
+3. Upload the `.vsix` to a GitHub Release.
+
+---
+
+## Building for Other Editors
+
+The same heartbeat architecture works for any editor. Here is what changes per editor:
+
+| Editor | Event API | Plugin Format | Language |
+|---|---|---|---|
+| **VS Code** | `vscode.workspace.onDidChangeTextDocument` | `.vsix` | TypeScript/JavaScript |
+| **JetBrains** (IntelliJ, PyCharm, etc.) | `DocumentListener`, `FileEditorManagerListener` | `.jar` / `.zip` | Java/Kotlin |
+| **Vim** | `autocmd CursorMoved, BufWritePost` | Vimscript plugin | Vimscript |
+| **Neovim** | `vim.api.nvim_create_autocmd` | Lua plugin | Lua |
+| **Sublime Text** | `EventListener.on_modified`, `on_post_save` | `.sublime-package` | Python |
+| **Emacs** | `after-change-functions`, `after-save-hook` | Elisp package | Emacs Lisp |
+
+Regardless of the editor, the core loop is always the same:
+
+1. **Hook into edit/save/focus events** using the editor's plugin API.
+2. **Throttle** - don't send a heartbeat on every keystroke. Only send when the cooldown (usually 2 minutes) has elapsed, the file has changed, or the user saves.
+3. **Send a `POST` request** with the heartbeat JSON to `https://hackatime.hackclub.com/api/v1/users/current/heartbeats`.
+4. **Authenticate** with `Authorization: Basic <base64(api_key)>`.
+
+<Callout type="info" title="Study existing plugins">
+  All official WakaTime plugins are open source. Studying them is the best way to learn how to build for a specific editor:
+  
+  - [vscode-wakatime](https://github.com/wakatime/vscode-wakatime) (TypeScript)
+  - [jetbrains-wakatime](https://github.com/wakatime/jetbrains-wakatime) (Kotlin)
+  - [vim-wakatime](https://github.com/wakatime/vim-wakatime) (Vimscript)
+  - [wakatime.el](https://github.com/wakatime/wakatime-mode) (Emacs Lisp)
+</Callout>
+
+---
+
+## Going Further
+
+Want to make your extension stand out? Here are some ideas:
+
+- **Use `wakatime-cli`** - instead of sending heartbeats via HTTP directly, download and execute the official [`wakatime-cli`](https://github.com/wakatime/wakatime-cli) binary. It auto-detects Git branches, line counts, and project names much more accurately.
+- **Status bar time display** - fetch the user's daily total from the Hackatime API and show it in the editor (e.g., `2h 34m today`).
+- **Bulk heartbeats** - queue heartbeats and send them in batches of up to 25 using the `/heartbeats.bulk` endpoint.
+- **Offline support** - save heartbeats to a local file when offline and send them when connectivity returns.
+- **Read `~/.wakatime.cfg`** - parse both `api_key` and `api_url` from the WakaTime config file so users who already have Hackatime set up don't need to configure anything twice.
+
+---
+
+## Troubleshooting
+
+<Callout type="warn" title="Heartbeats not showing up on the dashboard?">
+  Double-check your API key. Make sure the API URL is set to `https://hackatime.hackclub.com/api/v1`. If you are reading from `~/.wakatime.cfg`, check that `api_url` is pointing to Hackatime and not the default WakaTime server.
+</Callout>
+
+<Callout type="error" title="Getting 401 Unauthorized?">
+  Hackatime uses Basic Auth where the API key is base64-encoded by itself. Make sure you are encoding **just the API key** (not `username:key`). Example header: `Authorization: Basic <base64(your_api_key)>`.
+</Callout>
+
+<Callout type="warn" title="Heartbeats sending but time seems wrong?">
+  Make sure the `time` field is in **seconds** (Unix epoch), not milliseconds. Use `Date.now() / 1000` in JavaScript, `time.time()` in Python, `System.currentTimeMillis() / 1000.0` in Java/Kotlin.
+</Callout>
