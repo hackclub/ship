@@ -82,7 +82,7 @@ WIP: THIS IS INCOMPLETE
 2. Navigate to the [project management dashboard](https://modrinth.com/dashboard/projects)
 3. Start the project creation by clicking "*Create a Project*"
 
-![Create a new project on the Modrinth project page](/docs/web/images/minecraft-project-new.png)
+![Create a new project on the Modrinth project page](/minecraft-assets/minecraft-project-new.png)
 
 </Step>
 
@@ -94,7 +94,7 @@ WIP: THIS IS INCOMPLETE
 - **Visibility**: Who can access the project. This has to be set to **Public** for all Hack Club projects.
 - **Summary**: Short tagline describing the project.
 
-![Configure the project with the required fields](/docs/web/images/minecraft-project-configuration.png)
+![Configure the project with the required fields](/minecraft-assets/minecraft-project-configuration.png)
 
 </Step>
 
@@ -107,8 +107,8 @@ Once you have created the project, you can create its first version.
 2. Scroll down, and open the "*Versions*" panel
 3. Create a new version by clicking the "*Create version*" button
 
-![Navigate to the project settings by clicking the gear icon](/docs/web/images/minecraft-project-settings.png)
-![Create a new version of the project](/docs/web/images/minecraft-version-create.png)
+![Navigate to the project settings by clicking the gear icon](/minecraft-assets/minecraft-project-settings.png)
+![Create a new version of the project](/minecraft-assets/minecraft-version-create.png)
 
 </Step>
 
@@ -120,18 +120,27 @@ After you've selected your project, you can configure various properties about i
 
 <Tabs items={["Mods", "Resource Packs", "Data Packs"]}>
 <Tab>
+
 - **Environment**: Where your mod is meant to run.
 - **Dependencies**: Any other mods your mod needs to run.
 - **Metadata**: Required mod loaders and game versions.
+- **Details**: Information regarding the version, including the version number and a changelog.
 
-![TODO](/docs/web/images/minecraft-version-dependencies.png)
-![TODO](/docs/web/images/minecraft-version-details.png)
-![TODO](/docs/web/images/minecraft-version-environment.png)
-![TODO](/docs/web/images/minecraft-version-metadata.png)
+![If your mod runs client-side only, server-side only, both, optional for client or server, etc.](/minecraft-assets/minecraft-mod-environment.png)
+![Which mods your mod needs to run properly](/minecraft-assets/minecraft-mod-dependencies.png)
+![Mod loaders and versions](/minecraft-assets/minecraft-mod-metadata.png)
+![Version type, number, title, and changelog](/minecraft-assets/minecraft-mod-details.png)
 </Tab>
 
 <Tab>
-reosurc
+
+- **Versions**: What versions the resource pack works on.
+- **Dependencies**: Any mods your resource pack needs to work.
+- **Details**: Information regarding the version, including the version number and a changelog.
+
+![What versions the resource pack works on](/minecraft-assets/minecraft-resourcepacks-versions.png)
+![Which mods your resource pack needs to work properly](/minecraft-assets/minecraft-resourcepacks-dependencies.png)
+![Version type, number, title, and changelog](/minecraft-assets/minecraft-resourcepacks-details.png)
 </Tab>
 
 <Tab>
