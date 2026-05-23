@@ -4,5 +4,198 @@ description: Best way of showcasing your Demo
 icon: Play
 ---
 
-<Callout type="warn" title="This is a WIP docs">
+# Demo Guidelines
+
+A demo link is how reviewers and users actually experience your project. Every project must include a working, testable demo appropriate to its type. If a project cannot be tested, it may be rejected.
+
+---
+
+## Web Apps
+
+Web apps must be deployed to a **public live URL** so anyone can open it in a browser.
+If your app has authentication, users must be able to create their own accounts and log in without using existing test accounts.
+
+**Accepted:**
+- [GitHub Pages](/docs/web/github-pages)
+- [Vercel](/docs/web/vercel)
+- Netlify
+- Other stable hosting platforms
+
+**Not accepted:**
+- localhost
+- ngrok / cloudflared
+- DuckDNS
+- Render / Railway / Hugging Face
+  - These services spin down on the free tier, meaning users may hit a cold-start delay or a dead link.
+
+For more information, read the [web app](/docs/web/web-apps) guide!
+
+---
+
+## Executable / Desktop Applications
+
+Desktop apps must be provided as a ready-to-download build through GitHub Releases.
+
+Reviewers and users should not have to search through code or figure out how to build your project.
+The app must launch on a standard machine without manual source code setup.
+
+For more information, read the guides for [Windows](/docs/desktop-apps/windows), [macOS](/docs/desktop-apps/macos), or [Linux](/docs/desktop-apps/linux)!
+
+---
+
+## Mobile Applications
+
+[Android](/docs/mobile-apps/android) and [iOS](/docs/mobile-apps/ios) apps must be installable and usable without requiring the user to build it.
+
+### Android
+
+**Accepted:**
+- Link to a GitHub Releases page containing an APK file
+- Google Play Store link
+
+### iOS
+
+**Accepted:**
+- TestFlight link
+- App Store link
+
+---
+
+## APIs
+
+**Accepted:**
+- Swagger / OpenAPI documentation
+- Interactive API explorer
+
+Reviewers should be able to test endpoints directly, and they should not need to write their own code to check if the API works.
+
+For more information, read the full [guide](/docs/apis/apis)!
+
+---
+
+## Chat Bots
+
+Your bot needs to be hosted and running 24/7. If the bot is offline or not usable, the demo is not valid and your project can be rejected.
+
+For more information, read the guides for [Discord](/docs/chat-bots/discord), [Slack](/docs/chat-bots/slack), or [Telegram](/docs/chat-bots/telegram)!
+
+### Discord
+
+Provide a server invite link where users can test the bot.
+
+### Slack
+
+The bot must be installed in a workspace. Provide a Slack workspace invite link, or a channel link where reviewers and users can test the bot.
+
+### Telegram
+
+Provide a link so reviewers can start a conversation with the bot. Shipwrights must open your bot in Telegram and start interacting with it immediately without setup on their end.
+
+
+---
+
+## Games
+
+**Accepted:**
+- Web build on itch.io or similar
+- Download in GitHub Releases
+
+---
+
+## CLI Tools
+
+**Accepted:**
+- Package manager install (npm, pip, cargo, etc.)
+- Pre-compiled binary on GitHub Releases
+
+Detailed installation and usage instructions should be included in the README.
+
+For more information, read the full [guide](/docs/cli/cli)!
+
+---
+
+## Libraries / Packages
+
+Projects must be published to a valid package manager ([npm](/docs/libraries/npm), [PyPI](/docs/libraries/pypi), [Cargo](/docs/libraries/cargo), LuaRocks, etc.).
+
+---
+
+## Browser Extensions
+
+**Accepted:**
+- Chrome Web Store / Firefox Add-ons
+- Packaged files (`.crx`, `.xpi`, `.vsix`) in GitHub Releases
+
+For more information, read the full guides for [Chrome](/docs/browser-extensions/chrome) or [Firefox](/docs/browser-extensions/firefox)!
+
+---
+
+## Userscripts
+
+Userscripts need a proper install system so they can be added and updated easily.
+
+**Accepted:**
+- Tampermonkey
+- Greasy Fork
+
+**Not accepted:**
+- Raw .js or .txt files
+
+---
+
+## Game Mods
+
+### Minecraft
+The demo must link to a Modrinth or CurseForge page.
+
+GitHub Releases alone are not acceptable.
+
+For more information, read the full [guide](/docs/game-mods/minecraft)!
+
+### Other games
+The demo must link to a mod page on a popular mod registry, such as Thunderstore or Nexus Mods.
+
+---
+
+## Hardware Projects
+
+Reviewers and users need to clearly see the physical project working.
+
+**Accepted:**
+- Video of the hardware working
+
+**Not accepted:**
+- Google Drive video links
+
+For more information, read the full [guide](/docs/hardware/hardware)!
+
+---
+
+## AI / Machine Learning Projects
+
+AI projects must be easy to test directly from the demo. Users should be able to open your project and immediately interact with it without setup, installs, or configuration.
+
+The demo must include a clear way to use the AI, such as:
+- Web application
+- CLI tool
+- Desktop application
+
+<Callout type="warn" title="Hosting restrictions">
+  Platforms that require manual execution or external accounts (such as **Hugging Face Spaces, Google Colab, and Kaggle notebooks**) are not accepted as a demo. These require users to run cells or configure environments before testing, which is not allowed.
 </Callout>
+
+### Local or Embedded Models
+
+If your model runs locally or in-browser:
+- You may provide a downloadable app or executable
+- Or a web app using supported browser-based ML libraries
+
+---
+
+## 3D Models
+
+**Accepted:**
+- Printables
+- MakerWorld
+
+---
